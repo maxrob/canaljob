@@ -32,27 +32,6 @@ class Formation extends BaseEntity
     /**
      * @var string
      *
-     * @ORM\Column(name="address", type="string", length=255)
-     */
-    private $address;
-
-    /**
-     * @var float
-     *
-     * @ORM\Column(name="latitude", type="float")
-     */
-    private $latitude;
-
-    /**
-     * @var float
-     *
-     * @ORM\Column(name="longitude", type="float")
-     */
-    private $longitude;
-
-    /**
-     * @var string
-     *
      * @ORM\Column(name="description", type="text")
      */
     private $description;
@@ -105,6 +84,24 @@ class Formation extends BaseEntity
      * @ORM\JoinColumn(name="school_id", referencedColumnName="id")
      */
     protected $school;
+
+    /**
+     * @ORM\OneToOne(targetEntity="Department", inversedBy="formation")
+     * @ORM\JoinColumn(name="department_id", referencedColumnName="id", unique=true, nullable=true)
+     */
+    private $department;
+
+    /**
+     * @ORM\ManyToOne(targetEntity="FormationField", inversedBy="formations")
+     * @ORM\JoinColumn(name="formation_field_id", referencedColumnName="id")
+     */
+    protected $formationField;
+
+    /**
+     * @ORM\ManyToOne(targetEntity="FormationType", inversedBy="formations")
+     * @ORM\JoinColumn(name="formation_type_id", referencedColumnName="id")
+     */
+    protected $formationType;
 
     public function __construct()
     {
@@ -381,5 +378,53 @@ class Formation extends BaseEntity
     public function setSchool($school)
     {
         $this->school = $school;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getDepartment()
+    {
+        return $this->department;
+    }
+
+    /**
+     * @param mixed $department
+     */
+    public function setDepartment($department)
+    {
+        $this->department = $department;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getFormationField()
+    {
+        return $this->formationField;
+    }
+
+    /**
+     * @param mixed $formationField
+     */
+    public function setFormationField($formationField)
+    {
+        $this->formationField = $formationField;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getFormationType()
+    {
+        return $this->formationType;
+    }
+
+    /**
+     * @param mixed $formationType
+     */
+    public function setFormationType($formationType)
+    {
+        $this->formationType = $formationType;
     }
 }

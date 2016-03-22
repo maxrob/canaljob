@@ -6,3 +6,9 @@ parameters:
 services:
     fos_user.doctrine_registry:
         alias: doctrine
+
+
+    # Service
+
+    get_object_from_flux:
+          class: AppBundle\Service\GetObjectFromFlux

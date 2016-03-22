@@ -31,23 +31,9 @@ class Job extends BaseEntity
     /**
      * @var string
      *
-     * @ORM\Column(name="address", type="string", length=255)
+     * @ORM\Column(name="city", type="string", length=255)
      */
-    private $address;
-
-    /**
-     * @var float
-     *
-     * @ORM\Column(name="latitude", type="float")
-     */
-    private $latitude;
-
-    /**
-     * @var float
-     *
-     * @ORM\Column(name="longitude", type="float")
-     */
-    private $longitude;
+    private $city;
 
     /**
      * @var string
@@ -66,7 +52,7 @@ class Job extends BaseEntity
     /**
      * @var \DateTime
      *
-     * @ORM\Column(name="begin_date", type="date")
+     * @ORM\Column(name="begin_date", type="date", nullable=true)
      */
     private $beginDate;
 
@@ -92,13 +78,6 @@ class Job extends BaseEntity
     private $mail;
 
     /**
-     * @var bool
-     *
-     * @ORM\Column(name="is_geoloc", type="boolean", nullable=true)
-     */
-    private $isGeoloc;
-
-    /**
      * @var float
      *
      * @ORM\Column(name="salary_min", type="float", nullable=true)
@@ -111,6 +90,14 @@ class Job extends BaseEntity
      * @ORM\Column(name="salary_max", type="float", nullable=true)
      */
     private $salaryMax;
+
+
+    /**
+     * @var string
+     *
+     * @ORM\Column(name="salary_type", type="string", nullable=true)
+     */
+    private $salaryType;
 
     /**
      * @var int
@@ -129,9 +116,25 @@ class Job extends BaseEntity
     protected $company;
 
     /**
-     * Get id
-     *
-     * @return integer 
+     * @ORM\OneToOne(targetEntity="AppBundle\Entity\Department", inversedBy="job")
+     * @ORM\JoinColumn(name="department_id", referencedColumnName="id", unique=true, nullable=true)
+     */
+    private $department;
+
+    /**
+     * @ORM\ManyToOne(targetEntity="JobField", inversedBy="jobs")
+     * @ORM\JoinColumn(name="job_field_id", referencedColumnName="id")
+     */
+    protected $jobField;
+
+    /**
+     * @ORM\ManyToOne(targetEntity="JobType", inversedBy="jobs")
+     * @ORM\JoinColumn(name="job_type_id", referencedColumnName="id")
+     */
+    protected $jobType;
+
+    /**
+     * @return int
      */
     public function getId()
     {
@@ -139,22 +142,15 @@ class Job extends BaseEntity
     }
 
     /**
-     * Set title
-     *
-     * @param string $title
-     * @return Job
+     * @param int $id
      */
-    public function setTitle($title)
+    public function setId($id)
     {
-        $this->title = $title;
-
-        return $this;
+        $this->id = $id;
     }
 
     /**
-     * Get title
-     *
-     * @return string 
+     * @return string
      */
     public function getTitle()
     {
@@ -162,91 +158,31 @@ class Job extends BaseEntity
     }
 
     /**
-     * Set address
-     *
-     * @param string $address
-     * @return Job
+     * @param string $title
      */
-    public function setAddress($address)
+    public function setTitle($title)
     {
-        $this->address = $address;
-
-        return $this;
+        $this->title = $title;
     }
 
     /**
-     * Get address
-     *
-     * @return string 
+     * @return string
      */
-    public function getAddress()
+    public function getCity()
     {
-        return $this->address;
+        return $this->city;
     }
 
     /**
-     * Set latitude
-     *
-     * @param string $latitude
-     * @return Job
+     * @param string $city
      */
-    public function setLatitude($latitude)
+    public function setCity($city)
     {
-        $this->latitude = $latitude;
-
-        return $this;
+        $this->city = $city;
     }
 
     /**
-     * Get latitude
-     *
-     * @return string 
-     */
-    public function getLatitude()
-    {
-        return $this->latitude;
-    }
-
-    /**
-     * Set longitude
-     *
-     * @param float $longitude
-     * @return Job
-     */
-    public function setLongitude($longitude)
-    {
-        $this->longitude = $longitude;
-
-        return $this;
-    }
-
-    /**
-     * Get longitude
-     *
-     * @return float 
-     */
-    public function getLongitude()
-    {
-        return $this->longitude;
-    }
-
-    /**
-     * Set description
-     *
-     * @param string $description
-     * @return Job
-     */
-    public function setDescription($description)
-    {
-        $this->description = $description;
-
-        return $this;
-    }
-
-    /**
-     * Get description
-     *
-     * @return string 
+     * @return string
      */
     public function getDescription()
     {
@@ -254,22 +190,15 @@ class Job extends BaseEntity
     }
 
     /**
-     * Set prerequisite
-     *
-     * @param string $prerequisite
-     * @return Job
+     * @param string $description
      */
-    public function setPrerequisite($prerequisite)
+    public function setDescription($description)
     {
-        $this->prerequisite = $prerequisite;
-
-        return $this;
+        $this->description = $description;
     }
 
     /**
-     * Get prerequisite
-     *
-     * @return string 
+     * @return string
      */
     public function getPrerequisite()
     {
@@ -277,22 +206,15 @@ class Job extends BaseEntity
     }
 
     /**
-     * Set beginDate
-     *
-     * @param \DateTime $beginDate
-     * @return Job
+     * @param string $prerequisite
      */
-    public function setBeginDate($beginDate)
+    public function setPrerequisite($prerequisite)
     {
-        $this->beginDate = $beginDate;
-
-        return $this;
+        $this->prerequisite = $prerequisite;
     }
 
     /**
-     * Get beginDate
-     *
-     * @return \DateTime 
+     * @return \DateTime
      */
     public function getBeginDate()
     {
@@ -300,22 +222,15 @@ class Job extends BaseEntity
     }
 
     /**
-     * Set endDate
-     *
-     * @param \DateTime $endDate
-     * @return Job
+     * @param \DateTime $beginDate
      */
-    public function setEndDate($endDate)
+    public function setBeginDate($beginDate)
     {
-        $this->endDate = $endDate;
-
-        return $this;
+        $this->beginDate = $beginDate;
     }
 
     /**
-     * Get endDate
-     *
-     * @return \DateTime 
+     * @return \DateTime
      */
     public function getEndDate()
     {
@@ -323,22 +238,15 @@ class Job extends BaseEntity
     }
 
     /**
-     * Set url
-     *
-     * @param string $url
-     * @return Job
+     * @param \DateTime $endDate
      */
-    public function setUrl($url)
+    public function setEndDate($endDate)
     {
-        $this->url = $url;
-
-        return $this;
+        $this->endDate = $endDate;
     }
 
     /**
-     * Get url
-     *
-     * @return string 
+     * @return string
      */
     public function getUrl()
     {
@@ -346,22 +254,15 @@ class Job extends BaseEntity
     }
 
     /**
-     * Set mail
-     *
-     * @param string $mail
-     * @return Job
+     * @param string $url
      */
-    public function setMail($mail)
+    public function setUrl($url)
     {
-        $this->mail = $mail;
-
-        return $this;
+        $this->url = $url;
     }
 
     /**
-     * Get mail
-     *
-     * @return string 
+     * @return string
      */
     public function getMail()
     {
@@ -369,45 +270,15 @@ class Job extends BaseEntity
     }
 
     /**
-     * Set isGeoloc
-     *
-     * @param boolean $isGeoloc
-     * @return Job
+     * @param string $mail
      */
-    public function setIsGeoloc($isGeoloc)
+    public function setMail($mail)
     {
-        $this->isGeoloc = $isGeoloc;
-
-        return $this;
+        $this->mail = $mail;
     }
 
     /**
-     * Get isGeoloc
-     *
-     * @return boolean 
-     */
-    public function getIsGeoloc()
-    {
-        return $this->isGeoloc;
-    }
-
-    /**
-     * Set salaryMin
-     *
-     * @param float $salaryMin
-     * @return Job
-     */
-    public function setSalaryMin($salaryMin)
-    {
-        $this->salaryMin = $salaryMin;
-
-        return $this;
-    }
-
-    /**
-     * Get salaryMin
-     *
-     * @return float 
+     * @return float
      */
     public function getSalaryMin()
     {
@@ -415,22 +286,15 @@ class Job extends BaseEntity
     }
 
     /**
-     * Set salaryMax
-     *
-     * @param float $salaryMax
-     * @return Job
+     * @param float $salaryMin
      */
-    public function setSalaryMax($salaryMax)
+    public function setSalaryMin($salaryMin)
     {
-        $this->salaryMax = $salaryMax;
-
-        return $this;
+        $this->salaryMin = $salaryMin;
     }
 
     /**
-     * Get salaryMax
-     *
-     * @return float 
+     * @return float
      */
     public function getSalaryMax()
     {
@@ -438,26 +302,43 @@ class Job extends BaseEntity
     }
 
     /**
-     * Set status
-     *
-     * @param integer $status
-     * @return Job
+     * @param float $salaryMax
      */
-    public function setStatus($status)
+    public function setSalaryMax($salaryMax)
     {
-        $this->status = $status;
-
-        return $this;
+        $this->salaryMax = $salaryMax;
     }
 
     /**
-     * Get status
-     *
-     * @return integer 
+     * @return string
+     */
+    public function getSalaryType()
+    {
+        return $this->salaryType;
+    }
+
+    /**
+     * @param string $salaryType
+     */
+    public function setSalaryType($salaryType)
+    {
+        $this->salaryType = $salaryType;
+    }
+
+    /**
+     * @return int
      */
     public function getStatus()
     {
         return $this->status;
+    }
+
+    /**
+     * @param int $status
+     */
+    public function setStatus($status)
+    {
+        $this->status = $status;
     }
 
     /**
@@ -475,4 +356,54 @@ class Job extends BaseEntity
     {
         $this->company = $company;
     }
+
+    /**
+     * @return mixed
+     */
+    public function getDepartment()
+    {
+        return $this->department;
+    }
+
+    /**
+     * @param mixed $department
+     */
+    public function setDepartment($department)
+    {
+        $this->department = $department;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getJobField()
+    {
+        return $this->jobField;
+    }
+
+    /**
+     * @param mixed $jobField
+     */
+    public function setJobField($jobField)
+    {
+        $this->jobField = $jobField;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getJobType()
+    {
+        return $this->jobType;
+    }
+
+    /**
+     * @param mixed $jobType
+     */
+    public function setJobType($jobType)
+    {
+        $this->jobType = $jobType;
+    }
+
+
 }
