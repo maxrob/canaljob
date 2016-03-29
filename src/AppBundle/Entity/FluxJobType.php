@@ -5,12 +5,12 @@ namespace AppBundle\Entity;
 use Doctrine\ORM\Mapping as ORM;
 
 /**
- * FluxJobField
+ * FluxJobType
  *
- * @ORM\Table(name="flux_job_field")
- * @ORM\Entity(repositoryClass="AppBundle\Repository\FluxJobFieldRepository")
+ * @ORM\Table(name="flux_job_type")
+ * @ORM\Entity(repositoryClass="AppBundle\Repository\FluxJobTypeRepository")
  */
-class FluxJobField
+class FluxJobType
 {
     /**
      * @var int
@@ -24,20 +24,20 @@ class FluxJobField
     /**
      * @var string
      *
-     * @ORM\Column(name="name", type="string", length=255)
+     * @ORM\Column(name="name", type="string", length=255, unique=true)
      */
     private $name;
 
     /**
-     * @ORM\OneToMany(targetEntity="Job", mappedBy="fluxJobField")
+     * @ORM\OneToMany(targetEntity="Job", mappedBy="fluxJobType")
      */
     protected $jobs;
 
     /**
-     * @ORM\ManyToOne(targetEntity="JobField", inversedBy="fluxJobFields")
-     * @ORM\JoinColumn(name="job_field_id", referencedColumnName="id", nullable=true)
+     * @ORM\ManyToOne(targetEntity="JobType", inversedBy="fluxJobTypes")
+     * @ORM\JoinColumn(name="job_type_id", referencedColumnName="id", nullable=true)
      */
-    protected $jobField;
+    protected $jobType;
 
     /**
      * Get id
@@ -53,7 +53,7 @@ class FluxJobField
      * Set name
      *
      * @param string $name
-     * @return FluxJobField
+     * @return FluxJobType
      */
     public function setName($name)
     {
@@ -91,16 +91,16 @@ class FluxJobField
     /**
      * @return mixed
      */
-    public function getJobField()
+    public function getJobType()
     {
-        return $this->jobField;
+        return $this->jobType;
     }
 
     /**
-     * @param mixed $jobField
+     * @param mixed $jobType
      */
-    public function setJobField($jobField)
+    public function setJobType($jobType)
     {
-        $this->jobField = $jobField;
+        $this->jobType = $jobType;
     }
 }

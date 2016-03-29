@@ -4,6 +4,7 @@ namespace AppBundle\Controller;
 
 use AppBundle\Entity\Company;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
+use SimpleXMLElement;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Validator\Constraints\DateTime;
@@ -18,11 +19,10 @@ class BaseController extends Controller
     {
         $fluxService = $this->get('get_object_from_flux');
 
-        $xml = "http://jobs.contactrh.com/get/XAePWe9fIg0G?client=sogeti";
-        $begin = new \DateTime("2016-01-15");
-        $end = new \DateTime("2016-02-15");
+        $begin = new \DateTime("2016-03-15");
+        $end = new \DateTime("2016-04-15");
 
-        $fluxService->getFluxXml($xml, $begin, $end);
+        $fluxService->getFluxXml($begin, $end);
 
         return $this->render(':default:index.html.twig');
     }
@@ -45,8 +45,8 @@ class BaseController extends Controller
 
         $company = new Company();
         $company->setName('Sogeti');
-        $company->setFluxXml("http://jobs.contactrh.com/get/XAePWe9fIg0G?client=sogeti");
-
+        $company->setFluxXml("http://robinmaxime.com/flux.php");
+        //"http://jobs.contactrh.com/get/XAePWe9fIg0G?client=sogeti"
 
         $em = $this->getDoctrine()->getManager();
         $em->persist($company);
@@ -58,5 +58,13 @@ class BaseController extends Controller
         $em->flush();
 
         return $this->render(':default:index.html.twig');
+    }
+
+    /**
+     * @Route("/flux/xml")
+     */
+    public function fluxXmlAction()
+    {
+
     }
 }

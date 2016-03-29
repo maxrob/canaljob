@@ -32,6 +32,41 @@ class Formation extends BaseEntity
     /**
      * @var string
      *
+     * @ORM\Column(name="address", type="string", length=255)
+     */
+    private $address;
+
+    /**
+     * @var float
+     *
+     * @ORM\Column(name="latitude", type="float")
+     */
+    private $latitude;
+
+    /**
+     * @var float
+     *
+     * @ORM\Column(name="longitude", type="float")
+     */
+    private $longitude;
+
+    /**
+     * @var string
+     *
+     * @ORM\Column(name="zip", type="string", length=255, nullable=true)
+     */
+    private $zip;
+
+    /**
+     * @var string
+     *
+     * @ORM\Column(name="city", type="string", length=255)
+     */
+    private $city;
+
+    /**
+     * @var string
+     *
      * @ORM\Column(name="description", type="text")
      */
     private $description;
@@ -86,22 +121,22 @@ class Formation extends BaseEntity
     protected $school;
 
     /**
-     * @ORM\OneToOne(targetEntity="Department", inversedBy="formation")
-     * @ORM\JoinColumn(name="department_id", referencedColumnName="id", unique=true, nullable=true)
+     * @ORM\ManyToOne(targetEntity="Department", inversedBy="formations")
+     * @ORM\JoinColumn(name="department_id", referencedColumnName="id", nullable=true)
      */
     private $department;
 
     /**
-     * @ORM\ManyToOne(targetEntity="FormationField", inversedBy="formations")
-     * @ORM\JoinColumn(name="formation_field_id", referencedColumnName="id")
+     * @ORM\ManyToOne(targetEntity="FluxFormationField", inversedBy="formations")
+     * @ORM\JoinColumn(name="flux_formation_field_id", referencedColumnName="id")
      */
-    protected $formationField;
+    protected $fluxFormationField;
 
     /**
-     * @ORM\ManyToOne(targetEntity="FormationType", inversedBy="formations")
-     * @ORM\JoinColumn(name="formation_type_id", referencedColumnName="id")
+     * @ORM\ManyToOne(targetEntity="FluxFormationType", inversedBy="formations")
+     * @ORM\JoinColumn(name="flux_formation_type_id", referencedColumnName="id")
      */
-    protected $formationType;
+    protected $fluxFormationType;
 
     public function __construct()
     {
@@ -208,6 +243,38 @@ class Formation extends BaseEntity
     public function getLongitude()
     {
         return $this->longitude;
+    }
+
+    /**
+     * @return string
+     */
+    public function getZip()
+    {
+        return $this->zip;
+    }
+
+    /**
+     * @param string $zip
+     */
+    public function setZip($zip)
+    {
+        $this->zip = $zip;
+    }
+
+    /**
+     * @return string
+     */
+    public function getCity()
+    {
+        return $this->city;
+    }
+
+    /**
+     * @param string $city
+     */
+    public function setCity($city)
+    {
+        $this->city = $city;
     }
 
     /**
@@ -399,32 +466,32 @@ class Formation extends BaseEntity
     /**
      * @return mixed
      */
-    public function getFormationField()
+    public function getFluxFormationField()
     {
-        return $this->formationField;
+        return $this->fluxFormationField;
     }
 
     /**
-     * @param mixed $formationField
+     * @param mixed $fluxFormationField
      */
-    public function setFormationField($formationField)
+    public function setFluxFormationField($fluxFormationField)
     {
-        $this->formationField = $formationField;
+        $this->fluxFormationField = $fluxFormationField;
     }
 
     /**
      * @return mixed
      */
-    public function getFormationType()
+    public function getFluxFormationType()
     {
-        return $this->formationType;
+        return $this->fluxFormationType;
     }
 
     /**
-     * @param mixed $formationType
+     * @param mixed $fluxFormationType
      */
-    public function setFormationType($formationType)
+    public function setFluxFormationType($fluxFormationType)
     {
-        $this->formationType = $formationType;
+        $this->fluxFormationType = $fluxFormationType;
     }
 }

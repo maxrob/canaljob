@@ -29,11 +29,6 @@ class FormationField
     private $name;
 
     /**
-     * @ORM\OneToMany(targetEntity="Formation", mappedBy="formationField")
-     */
-    protected $formations;
-
-    /**
      * @ORM\OneToOne(targetEntity="FluxFormationField", mappedBy="formationField")
      */
     private $fluxFormationFields;
@@ -69,22 +64,6 @@ class FormationField
     public function getName()
     {
         return $this->name;
-    }
-
-    /**
-     * @return mixed
-     */
-    public function getFormations()
-    {
-        return $this->formations;
-    }
-
-    /**
-     * @param mixed $formations
-     */
-    public function setFormations($formations)
-    {
-        $this->formations = $formations;
     }
 
     /**

@@ -12,3 +12,4 @@ services:
 
     get_object_from_flux:
           class: AppBundle\Service\GetObjectFromFlux
+          arguments: [ @doctrine.orm.entity_manager ]

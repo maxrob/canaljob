@@ -29,9 +29,9 @@ class FormationType
     private $name;
 
     /**
-     * @ORM\OneToMany(targetEntity="Formation", mappedBy="formationType")
+     * @ORM\OneToOne(targetEntity="FluxFormationType", mappedBy="formationType")
      */
-    protected $formations;
+    private $fluxFormationTypes;
 
     /**
      * Get id
@@ -69,16 +69,17 @@ class FormationType
     /**
      * @return mixed
      */
-    public function getFormations()
+    public function getFluxFormationTypes()
     {
-        return $this->formations;
+        return $this->fluxFormationTypes;
     }
 
     /**
-     * @param mixed $formations
+     * @param mixed $fluxFormationTypes
      */
-    public function setFormations($formations)
+    public function setFluxFormationTypes($fluxFormationTypes)
     {
-        $this->formations = $formations;
+        $this->fluxFormationTypes = $fluxFormationTypes;
     }
+
 }

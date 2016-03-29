@@ -36,19 +36,14 @@ class Department
     private $name;
 
     /**
-     * @ORM\OneToOne(targetEntity="AppBundle\Entity\Job", mappedBy="department")
+     * @ORM\OneToMany(targetEntity="AppBundle\Entity\Job", mappedBy="department")
      */
-    private $job;
+    private $jobs;
 
     /**
-     * @ORM\OneToOne(targetEntity="AppBundle\Entity\Formation", mappedBy="department")
+     * @ORM\OneToMany(targetEntity="AppBundle\Entity\Formation", mappedBy="department")
      */
-    private $formation;
-
-    /**
-     * @ORM\OneToOne(targetEntity="FluxDepartment", mappedBy="department")
-     */
-    private $fluxDepartments;
+    private $formations;
 
 
     /**
@@ -139,19 +134,5 @@ class Department
         $this->formation = $formation;
     }
 
-    /**
-     * @return mixed
-     */
-    public function getFluxDepartments()
-    {
-        return $this->fluxDepartments;
-    }
 
-    /**
-     * @param mixed $fluxDepartments
-     */
-    public function setFluxDepartments($fluxDepartments)
-    {
-        $this->fluxDepartments = $fluxDepartments;
-    }
 }

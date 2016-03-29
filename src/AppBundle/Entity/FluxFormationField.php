@@ -29,10 +29,15 @@ class FluxFormationField
     private $name;
 
     /**
+     * @ORM\OneToMany(targetEntity="Formation", mappedBy="fluxFormationField")
+     */
+    protected $formations;
+
+    /**
      * @ORM\ManyToOne(targetEntity="FormationField", inversedBy="fluxFormationFields")
      * @ORM\JoinColumn(name="formation_field_id", referencedColumnName="id", nullable=true)
      */
-    protected $jobField;
+    protected $formationField;
 
     /**
      * Get id
@@ -81,5 +86,21 @@ class FluxFormationField
     public function setJobField($jobField)
     {
         $this->jobField = $jobField;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getFormations()
+    {
+        return $this->formations;
+    }
+
+    /**
+     * @param mixed $formations
+     */
+    public function setFormations($formations)
+    {
+        $this->formations = $formations;
     }
 }

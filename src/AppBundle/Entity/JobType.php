@@ -29,9 +29,9 @@ class JobType
     private $name;
 
     /**
-     * @ORM\OneToMany(targetEntity="Job", mappedBy="jobType")
+     * @ORM\OneToOne(targetEntity="FluxJobType", mappedBy="jobType")
      */
-    protected $jobs;
+    private $fluxJobTypes;
 
     /**
      * Get id
@@ -69,16 +69,16 @@ class JobType
     /**
      * @return mixed
      */
-    public function getJobs()
+    public function getFluxJobTypes()
     {
-        return $this->jobs;
+        return $this->fluxJobTypes;
     }
 
     /**
-     * @param mixed $jobs
+     * @param mixed $fluxJobTypes
      */
-    public function setJobs($jobs)
+    public function setFluxJobTypes($fluxJobTypes)
     {
-        $this->jobs = $jobs;
+        $this->fluxJobTypes = $fluxJobTypes;
     }
 }

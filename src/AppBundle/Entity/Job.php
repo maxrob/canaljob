@@ -31,6 +31,34 @@ class Job extends BaseEntity
     /**
      * @var string
      *
+     * @ORM\Column(name="address", type="string", length=255)
+     */
+    private $address;
+
+    /**
+     * @var float
+     *
+     * @ORM\Column(name="latitude", type="float")
+     */
+    private $latitude;
+
+    /**
+     * @var float
+     *
+     * @ORM\Column(name="longitude", type="float")
+     */
+    private $longitude;
+
+    /**
+     * @var string
+     *
+     * @ORM\Column(name="zip", type="string", length=255, nullable=true)
+     */
+    private $zip;
+
+    /**
+     * @var string
+     *
      * @ORM\Column(name="city", type="string", length=255)
      */
     private $city;
@@ -78,6 +106,13 @@ class Job extends BaseEntity
     private $mail;
 
     /**
+     * @var bool
+     *
+     * @ORM\Column(name="is_geoloc", type="boolean", nullable=true)
+     */
+    private $isGeoloc;
+
+    /**
      * @var float
      *
      * @ORM\Column(name="salary_min", type="float", nullable=true)
@@ -116,22 +151,22 @@ class Job extends BaseEntity
     protected $company;
 
     /**
-     * @ORM\OneToOne(targetEntity="AppBundle\Entity\Department", inversedBy="job")
-     * @ORM\JoinColumn(name="department_id", referencedColumnName="id", unique=true, nullable=true)
+     * @ORM\ManyToOne(targetEntity="AppBundle\Entity\Department", inversedBy="jobs")
+     * @ORM\JoinColumn(name="department_id", referencedColumnName="id", nullable=true)
      */
     private $department;
 
     /**
-     * @ORM\ManyToOne(targetEntity="JobField", inversedBy="jobs")
-     * @ORM\JoinColumn(name="job_field_id", referencedColumnName="id")
+     * @ORM\ManyToOne(targetEntity="FluxJobField", inversedBy="jobs")
+     * @ORM\JoinColumn(name="flux_job_field_id", referencedColumnName="id")
      */
-    protected $jobField;
+    protected $fluxJobField;
 
     /**
-     * @ORM\ManyToOne(targetEntity="JobType", inversedBy="jobs")
-     * @ORM\JoinColumn(name="job_type_id", referencedColumnName="id")
+     * @ORM\ManyToOne(targetEntity="FluxJobType", inversedBy="jobs")
+     * @ORM\JoinColumn(name="flux_job_type_id", referencedColumnName="id")
      */
-    protected $jobType;
+    protected $fluxJobType;
 
     /**
      * @return int
@@ -163,6 +198,70 @@ class Job extends BaseEntity
     public function setTitle($title)
     {
         $this->title = $title;
+    }
+
+    /**
+     * @return string
+     */
+    public function getAddress()
+    {
+        return $this->address;
+    }
+
+    /**
+     * @param string $address
+     */
+    public function setAddress($address)
+    {
+        $this->address = $address;
+    }
+
+    /**
+     * @return float
+     */
+    public function getLatitude()
+    {
+        return $this->latitude;
+    }
+
+    /**
+     * @param float $latitude
+     */
+    public function setLatitude($latitude)
+    {
+        $this->latitude = $latitude;
+    }
+
+    /**
+     * @return float
+     */
+    public function getLongitude()
+    {
+        return $this->longitude;
+    }
+
+    /**
+     * @param float $longitude
+     */
+    public function setLongitude($longitude)
+    {
+        $this->longitude = $longitude;
+    }
+
+    /**
+     * @return string
+     */
+    public function getZip()
+    {
+        return $this->zip;
+    }
+
+    /**
+     * @param string $zip
+     */
+    public function setZip($zip)
+    {
+        $this->zip = $zip;
     }
 
     /**
@@ -243,6 +342,54 @@ class Job extends BaseEntity
     public function setEndDate($endDate)
     {
         $this->endDate = $endDate;
+    }
+
+    /**
+     * @return boolean
+     */
+    public function isIsGeoloc()
+    {
+        return $this->isGeoloc;
+    }
+
+    /**
+     * @param boolean $isGeoloc
+     */
+    public function setIsGeoloc($isGeoloc)
+    {
+        $this->isGeoloc = $isGeoloc;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getFluxJobField()
+    {
+        return $this->fluxJobField;
+    }
+
+    /**
+     * @param mixed $fluxJobField
+     */
+    public function setFluxJobField($fluxJobField)
+    {
+        $this->fluxJobField = $fluxJobField;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getFluxJobType()
+    {
+        return $this->fluxJobType;
+    }
+
+    /**
+     * @param mixed $fluxJobType
+     */
+    public function setFluxJobType($fluxJobType)
+    {
+        $this->fluxJobType = $fluxJobType;
     }
 
     /**
