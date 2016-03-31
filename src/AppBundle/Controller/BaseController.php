@@ -3,17 +3,11 @@
 namespace AppBundle\Controller;
 
 use AppBundle\Entity\Company;
-use AppBundle\Entity\Formation;
-use AppBundle\Entity\FormationPeriod;
 use AppBundle\Entity\School;
-use Doctrine\ORM\EntityManager;
-use parseCSV;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
-use SimpleXMLElement;
 use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Symfony\Component\HttpFoundation\Request;
-use Symfony\Component\Validator\Constraints\DateTime;
 use UserBundle\Entity\User;
 
 class BaseController extends Controller
@@ -62,73 +56,9 @@ class BaseController extends Controller
             $file = $form->get('csv_file');
             $school = $form->get('schools')->getData();
 
-            // Your csv file here when you hit submit button
-            $csv = new parseCSV();
-            $csv->auto($file->getData());
+            $fluxService = $this->get('get_object_from_flux');
 
-            $em = $this->getDoctrine()->getManager();
-
-            foreach($csv->data as $data) {
-                $formation = new Formation();
-                $formation->setTitle($data['titre']);
-                $formation->setDescription($data['description']);
-                $formation->setPerspective($data['perspective']);
-                $formation->setUrl($data['url']);
-                $formation->setMail($data['mail']);
-                $formation->setSchool($school);
-                $formation->setIsGeoloc(true);
-                $formation->setStatus(0);
-
-                $geo = file_get_contents('http://maps.googleapis.com/maps/api/geocode/json?address='.urlencode($data['adresse']).'&sensor=false');
-                $geo = json_decode($geo, true);
-                if ($geo['status'] === 'OK') {
-                    $formation->setAddress($geo['results'][0]['formatted_address']);
-                    $formation->setLatitude($geo['results'][0]['geometry']['location']['lat']);
-                    $formation->setLongitude($geo['results'][0]['geometry']['location']['lng']);
-
-                    var_dump($geo['results'][0]['address_components']);
-
-                    foreach($geo['results'][0]['address_components'] as $component) {
-                        switch ($component['types'][0]) {
-                            case 'locality':
-                                $formation->setCity($component['long_name']);
-                                break;
-                            case 'postal_code':
-                                $formation->setZip($component['long_name']);
-                                break;
-                            case 'administrative_area_level_2':
-                                $department = $em->getRepository('AppBundle:Department')->findOneByName(strtoupper($component['long_name']));
-                                if($department) {
-                                    $formation->setDepartment($department);
-                                }
-                                break;
-                        }
-                    }
-                }
-
-
-                $em->persist($formation);
-                $em->flush();
-
-                $begin_date = explode(', ', $data['date_debut']);
-                $end_date = explode(', ', $data['date_fin']);
-
-                for($i = 0; $i < count($begin_date); $i++) {
-                    $begin = new \DateTime($begin_date[$i]);
-                    $end = new \DateTime($end_date[$i]);
-
-                    $period = new FormationPeriod();
-                    $period->setBeginDate($begin);
-                    $period->setEndDate($end);
-                    $period->setFormation($formation);
-
-                    $em->persist($period);
-                    $em->flush();
-                }
-
-                var_dump($formation);
-            }
-            die;
+            $fluxService->getFluxCSV($file, $school);
         }
 
         return $this->render(':default:csv.html.twig',
