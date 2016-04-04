@@ -180,6 +180,6 @@ class BaseController extends Controller
         $importService->setParameters($parameters);
         $importService->import();
 
-        return $this->redirect(':default:index.html.twig');
+        die();
     }
 }

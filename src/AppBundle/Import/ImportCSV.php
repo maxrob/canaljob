@@ -5,7 +5,7 @@ namespace AppBundle\Import;
 
 
 use Doctrine\ORM\EntityManager;
-use FOS\UserBundle\Form\Factory\FormFactory;
+use Symfony\Component\Form\FormFactory;
 
 class ImportCSV implements ImportInterface
 {
@@ -24,9 +24,8 @@ class ImportCSV implements ImportInterface
      */
     private $formFactory;
 
-    public function __construct(EntityManager $entityManager, FormFactory $formFactory, $parameters)
+    public function __construct(EntityManager $entityManager, FormFactory $formFactory)
     {
-        $this->parameters = $parameters;
         $this->entityManager = $entityManager;
         $this->formFactory = $formFactory;
     }

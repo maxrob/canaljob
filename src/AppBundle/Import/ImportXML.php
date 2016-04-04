@@ -24,9 +24,8 @@ class ImportXML implements ImportInterface
      */
     private $formFactory;
 
-    public function __construct(EntityManager $entityManager, FormFactory $formFactory, $parameters)
+    public function __construct(EntityManager $entityManager, FormFactory $formFactory)
     {
-        $this->parameters = $parameters;
         $this->entityManager = $entityManager;
         $this->formFactory = $formFactory;
     }
