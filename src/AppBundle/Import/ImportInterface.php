@@ -13,4 +13,6 @@ interface ImportInterface {
     public function getAddressData($address);
 
     public function getCorrespondence($domain , $type);
+
+    public function validateObject();
 }

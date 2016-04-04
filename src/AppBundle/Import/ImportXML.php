@@ -20,6 +20,11 @@ class ImportXML implements ImportInterface
      */
     private $object;
 
+    /**
+     * @var array
+     */
+    private $errors = [];
+
     public function __construct($parameters)
     {
         $this->parameters = $parameters;
@@ -43,29 +48,15 @@ class ImportXML implements ImportInterface
             $data = $this->getSource($url);
 
             foreach($data as $offer) {
-                $this->object = new Job();
-                $this->object->setCompany($company);
+                $this->object = [];
+                $this->object['company'] = $company;
                 $this->constructObject($offer);
 
-                var_dump($this->object);
+                $this->errors[] = $this->validateObject();
             }
         }
 
         die;
-
-
-
-        //$flux_job_form = $this->formFactory->create('appbundle_job', $this->object);
-
-        /* if(!$flux_job_form->isValid()) {
-            foreach ($flux_job_form->getErrors() as $key => $error) {
-                var_dump($key, $error);
-            }
-            var_dump('error');
-        } else {
-            var_dump('toto');
-        } */
-
         //$this->em->persist($job);
         //$this->em->flush();
     }
@@ -83,18 +74,18 @@ class ImportXML implements ImportInterface
             $begin_date = ($data->DATEDEBUT) ? new \DateTime($data->DATEDEBUT) : null;
             $end_date = ($data->DATEFIN) ? new \DateTime($data->DATEFIN) : null;
 
-            $this->object->setTitle((string)$data->INTITULE);
-            $this->object->setDescription((string)$data->PRESENTATION);
-            $this->object->setPrerequisite((string)$data->PROFILCANDIDAT);
-            $this->object->setBeginDate($begin_date);
-            $this->object->setEndDate($end_date);
-            $this->object->setUrl((string)$data->URL);
-            $this->object->setMail((string)$data->MAIL_ENVOI_CV);
-            $this->object->setIsGeoloc(true);
-            $this->object->setSalaryMin((int)$data->REMUNERATION_MIN);
-            $this->object->setSalaryMax((int)$data->REMUNERATION_MAX);
-            $this->object->setSalaryType((string)$data->REMUNERATION_F);
-            $this->object->setStatus(0);
+            $this->object['title'] = (string)$data->INTITULE;
+            $this->object['description'] = (string)$data->PRESENTATION;
+            $this->object['prerequisite'] = (string)$data->PROFILCANDIDAT;
+            $this->object['beginDate'] = $begin_date;
+            $this->object['endDate'] = $end_date;
+            $this->object['url'] = (string)$data->URL;
+            $this->object['mail'] = (string)$data->MAIL_ENVOI_CV;
+            $this->object['isGeoloc'] = true;
+            $this->object['salaryMin'] = (int)$data->REMUNERATION_MIN;
+            $this->object['salaryMax'] = (int)$data->REMUNERATION_MAX;
+            $this->object['salaryType'] = (string)$data->REMUNERATION_F;
+            $this->object['status'] = 0;
 
             $this->getAddressData($data->ADRESSE);
             $this->getCorrespondence((string)$data->FONCTION, (string)$data->TYPECONTRAT);
@@ -109,22 +100,22 @@ class ImportXML implements ImportInterface
         $geo = file_get_contents('http://maps.googleapis.com/maps/api/geocode/json?address=' . urlencode($address) . '&sensor=false');
         $geo = json_decode($geo, true);
         if ($geo['status'] === 'OK') {
-            $this->object->setAddress($geo['results'][0]['formatted_address']);
-            $this->object->setLatitude($geo['results'][0]['geometry']['location']['lat']);
-            $this->object->setLongitude($geo['results'][0]['geometry']['location']['lng']);
+            $this->object['address'] = $geo['results'][0]['formatted_address'];
+            $this->object['latitude'] = $geo['results'][0]['geometry']['location']['lat'];
+            $this->object['longitude'] = $geo['results'][0]['geometry']['location']['lng'];
 
             foreach ($geo['results'][0]['address_components'] as $component) {
                 switch ($component['types'][0]) {
                     case 'locality':
-                        $this->object->setCity($component['long_name']);
+                        $this->object['city'] = $component['long_name'];
                         break;
                     case 'postal_code':
-                        $this->object->setZip($component['long_name']);
+                        $this->object['zip'] = $component['long_name'];
                         break;
                     case 'administrative_area_level_2':
                         $department = $this->department->findOneByName(strtoupper($component['long_name']));
                         if ($department) {
-                            $this->object->setDepartment($department);
+                            $this->object['department'] = $department;
                         }
                         break;
                 }
@@ -154,6 +145,23 @@ class ImportXML implements ImportInterface
             $flux_job_type = $this->flux_job_type->findOneOrCreate(['name' => $type]);
             $this->object->setFluxJobType($flux_job_type);
             $flux_job['fluxJobType'] = $flux_job_type;
+        }
+    }
+
+    public function validateObject()
+    {
+        $job = new Job();
+        $import_job_form = $this->formFactory->create('appbundle_job', $job);
+
+        $import_job_form->handleRequest($this->object);
+
+        if(!$import_job_form->isValid()) {
+            foreach ($import_job_form->getErrors() as $key => $error) {
+                var_dump($key, $error);
+            }
+            var_dump('error');
+        } else {
+            var_dump('toto');
         }
     }
 

@@ -51,4 +51,9 @@ class ImportCSV implements ImportInterface
     {
         // TODO: Implement getCorrespondence() method.
     }
+
+    public function validateObject()
+    {
+        // TODO: Implement getCorrespondence() method.
+    }
 }
