@@ -30,6 +30,7 @@ class ImportFactory
                 $importSystem = new ImportXML($parameters);
                 break;
             default:
+                throw new \InvalidArgumentException("$type is not defined as import service.");
                 break;
         }
 
