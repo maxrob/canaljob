@@ -5,7 +5,7 @@ namespace AppBundle\Import;
 
 
 use Doctrine\ORM\EntityManager;
-use Symfony\Component\Form\FormFactory;
+use FOS\UserBundle\Form\Factory\FormFactory;
 
 class ImportCSV implements ImportInterface
 {
@@ -14,41 +14,35 @@ class ImportCSV implements ImportInterface
      */
     private $parameters;
 
-    public function __construct($parameters, EntityManager $em, FormFactory $formFactory)
+    /**
+     * @var EntityManager
+     */
+    private $entityManager;
+
+    /**
+     * @var FormFactory
+     */
+    private $formFactory;
+
+    public function __construct(EntityManager $entityManager, FormFactory $formFactory, $parameters)
     {
-        $this->em = $em;
-        $this->department = $this->em->getRepository('AppBundle:Department');
-        $this->company = $this->em->getRepository('AppBundle:Company');
-        $this->flux_job_field = $this->em->getRepository('AppBundle:FluxJobField');
-        $this->job_field = $this->em->getRepository('AppBundle:JobField');
-        $this->flux_job_type = $this->em->getRepository('AppBundle:FluxJobType');
-        $this->job_type = $this->em->getRepository('AppBundle:JobType');
-        $this->formFactory = $formFactory;
         $this->parameters = $parameters;
+        $this->entityManager = $entityManager;
+        $this->formFactory = $formFactory;
     }
 
-    public function import()
-    {
-
-    }
-
-    public function getSource($url)
+    public function getSource()
     {
         // TODO: Implement getSource() method.
     }
 
-    public function constructObject($data)
+    public function import()
     {
-        // TODO: Implement getObject() method.
+        var_dump("implements import for csv");
     }
 
-    public function getAddressData($address)
+    public function setParameters($parameters)
     {
-        // TODO: Implement getAddresses() method.
-    }
-
-    public function getCorrespondence($domain , $type)
-    {
-        // TODO: Implement getCorrespondence() method.
+        // TODO: Implement setParameters() method.
     }
 }

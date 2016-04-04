@@ -4,15 +4,13 @@ namespace AppBundle\Controller;
 
 use AppBundle\Entity\Company;
 use AppBundle\Entity\School;
-use AppBundle\Import\ImportFactory;
-use AppBundle\Import\ImportCSV;
-use AppBundle\Import\ImportInterface;
-use AppBundle\Import\ImportXML;
+use AppBundle\Service\CsvFlux;
+use AppBundle\Service\FluxInterface;
+use AppBundle\Service\ImportInterface;
+use AppBundle\Service\XmlFlux;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
-use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Symfony\Component\HttpFoundation\Request;
-use Symfony\Component\HttpFoundation\Response;
 use UserBundle\Entity\User;
 
 class BaseController extends Controller
@@ -26,61 +24,18 @@ class BaseController extends Controller
     }
 
     /**
-     * @Route("/import/{type}")
-     * @param Request $request
-     * @param $type
-     * @return Response
+     * @Route("/flux/xml")
      */
-    public function importAction(Request $request, $type)
+    public function fluxXmlAction()
     {
-        $parameters = [];
-        $form = null;
+        $fluxService = $this->get('get_object_from_flux');
 
-        switch ($type) {
-            case 'CSV':
-                $form = $this->createForm('appbundle_get_csv');
-                $form->handleRequest($request);
+        $begin = new \DateTime("2016-03-15");
+        $end = new \DateTime("2016-04-15");
 
-                if ($form->isSubmitted() && $form->isValid())
-                {
-                    // Get file
-                    $file = $form->get('csv_file');
-                    $school = $form->get('schools')->getData();
+        $fluxService->getFluxXml($begin, $end);
 
-                    $parameters = [
-                        "file"      => $file,
-                        "school"    => $school
-                    ];
-                }
-
-                $form = $form->createView();
-
-                $render = ':default:index.html.twig';
-                break;
-
-            case 'XML':
-                $parameters = [
-                    "begin" => new \DateTime("2016-03-15"),
-                    "end"   => new \DateTime("2016-04-15")
-                ];
-                $render = ':default:index.html.twig';
-                break;
-
-            default:
-                break;
-        }
-
-        $importService = ImportFactory::instanciate($type, $parameters);
-
-
-        /** @var ImportInterface $import */
-
-        $importService->import();
-
-
-        return $this->render($render,
-            ['form' => $form]
-        );
+        return $this->render(':default:index.html.twig');
     }
 
     /**
@@ -89,7 +44,23 @@ class BaseController extends Controller
     public function fluxCSVAction(Request $request)
     {
 
+        $form = $this->createForm('appbundle_get_csv');
+        $form->handleRequest($request);
 
+        if ($form->isSubmitted() && $form->isValid())
+        {
+            // Get file
+            $file = $form->get('csv_file');
+            $school = $form->get('schools')->getData();
+
+            $fluxService = $this->get('get_object_from_flux');
+
+            $fluxService->getFluxCSV($file, $school);
+        }
+
+        return $this->render(':default:csv.html.twig',
+            ['form' => $form->createView(),]
+        );
     }
 
     /**
@@ -194,5 +165,21 @@ class BaseController extends Controller
         return $this->render(':default:index.html.twig');
     }
 
+    /**
+     * @\Symfony\Component\Routing\Annotation\Route(name="import", path="/test/import/{type}")
+     * @param Request $request
+     * @return \Symfony\Component\HttpFoundation\RedirectResponse
+     */
+    public function importAction(Request $request)
+    {
+        // define parameters
+        $parameters = array();
 
+        $importService = $this->get('canal_job.import_system');
+
+        $importService->setParameters($parameters);
+        $importService->import();
+
+        return $this->redirect(':default:index.html.twig');
+    }
 }
