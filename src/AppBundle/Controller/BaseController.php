@@ -41,13 +41,7 @@ class BaseController extends Controller
     public function fluxCSVAction(Request $request)
     {
 
-        $form = $this->createFormBuilder()
-            ->add('csv_file', 'file', array('label' => 'File to Submit'))
-            ->add('schools', EntityType::class, array(
-                'class' => 'AppBundle:School',
-                'choice_label' => 'name',
-            ))
-            ->getForm();
+        $form = $this->createForm('appbundle_get_csv');
 
         $form->handleRequest($request);
 

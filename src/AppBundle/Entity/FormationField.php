@@ -29,9 +29,14 @@ class FormationField
     private $name;
 
     /**
-     * @ORM\OneToOne(targetEntity="FluxFormationField", mappedBy="formationField")
+     * @ORM\OneToMany(targetEntity="FluxFormationField", mappedBy="formationField")
      */
     private $fluxFormationFields;
+
+    /**
+     * @ORM\OneToMany(targetEntity="Formation", mappedBy="formationField")
+     */
+    private $formations;
 
     /**
      * Get id
@@ -80,5 +85,21 @@ class FormationField
     public function setFluxFormationFields($fluxFormationFields)
     {
         $this->fluxFormationFields = $fluxFormationFields;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getFormations()
+    {
+        return $this->formations;
+    }
+
+    /**
+     * @param mixed $formations
+     */
+    public function setFormations($formations)
+    {
+        $this->formations = $formations;
     }
 }

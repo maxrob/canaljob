@@ -12,13 +12,16 @@ use Symfony\Component\Validator\Constraints\DateTime;
 
 class GetObjectFromFlux
 {
-    public function __construct(EntityManager $em)
+    public function __construct(EntityManager $em, $formFactory)
     {
         $this->em = $em;
         $this->department = $this->em->getRepository('AppBundle:Department');
         $this->company = $this->em->getRepository('AppBundle:Company');
         $this->flux_job_field = $this->em->getRepository('AppBundle:FluxJobField');
+        $this->job_field = $this->em->getRepository('AppBundle:JobField');
         $this->flux_job_type = $this->em->getRepository('AppBundle:FluxJobType');
+        $this->job_type = $this->em->getRepository('AppBundle:JobType');
+        $this->formFactory = $formFactory;
     }
 
     public function getFluxXml($begin, $end)
@@ -45,6 +48,22 @@ class GetObjectFromFlux
                     $begin_date = ($offer->DATEDEBUT) ? new \DateTime($offer->DATEDEBUT) : null;
                     $end_date = ($offer->DATEFIN) ? new \DateTime($offer->DATEFIN) : null;
 
+                    $flux_job = [
+                        'title'         => (string)$offer->INTITULE,
+                        'description'   => (string)$offer->PRESENTATION,
+                        'prerequisite'  => (string)$offer->PROFILCANDIDAT,
+                        'beginDate'     => $begin_date,
+                        'endDate'       => $end_date,
+                        'url'           => (string)$offer->URL,
+                        'mail'          => (string)$offer->MAIL_ENVOI_CV,
+                        'isGeoloc'      => true,
+                        'salaryMin'     => (int)$offer->REMUNERATION_MIN,
+                        'salaryMax'     => (int)$offer->REMUNERATION_MAX,
+                        'salaryType'    => (string)$offer->REMUNERATION_F,
+                        'status'        => 0,
+                        'company'       => $company
+                    ];
+
                     $job = new Job();
 
                     $job->setTitle((string)$offer->INTITULE);
@@ -61,11 +80,27 @@ class GetObjectFromFlux
                     $job->setStatus(0);
                     $job->setCompany($company);
 
-                    $flux_job_field = $this->flux_job_field->findOneOrCreate(['name' => (string)$offer->FONCTION]);
-                    $job->setFluxJobField($flux_job_field);
+                    $job_field = $this->job_field->findOneByName((string)$offer->FONCTION);
 
-                    $flux_job_type = $this->flux_job_type->findOneOrCreate(['name' => (string)$offer->TYPECONTRAT]);
-                    $job->setFluxJobType($flux_job_type);
+                    if($job_field) {
+                        $job->setJobField($job_field);
+                        $flux_job['jobField'] = $job_field;
+                    } else {
+                        $flux_job_field = $this->flux_job_field->findOneOrCreate(['name' => (string)$offer->FONCTION]);
+                        $job->setFluxJobField($flux_job_field);
+                        $flux_job['fluxJobField'] = $flux_job_field;
+                    }
+
+                    $job_type = $this->job_type->findOneByName((string)$offer->TYPECONTRAT);
+
+                    if($job_type) {
+                        $job->setJobType($job_type);
+                        $flux_job['jobType'] = $job_type;
+                    } else {
+                        $flux_job_type = $this->flux_job_type->findOneOrCreate(['name' => (string)$offer->TYPECONTRAT]);
+                        $job->setFluxJobType($flux_job_type);
+                        $flux_job['fluxJobType'] = $flux_job_type;
+                    }
 
                     // Geolocation
                     $geo = file_get_contents('http://maps.googleapis.com/maps/api/geocode/json?address=' . urlencode($address) . '&sensor=false');
@@ -75,26 +110,45 @@ class GetObjectFromFlux
                         $job->setLatitude($geo['results'][0]['geometry']['location']['lat']);
                         $job->setLongitude($geo['results'][0]['geometry']['location']['lng']);
 
+                        $flux_job['address'] = $geo['results'][0]['formatted_address'];
+                        $flux_job['latitude'] = $geo['results'][0]['geometry']['location']['lat'];
+                        $flux_job['longitude'] = $geo['results'][0]['geometry']['location']['lng'];
+
+
                         foreach ($geo['results'][0]['address_components'] as $component) {
                             switch ($component['types'][0]) {
                                 case 'locality':
                                     $job->setCity($component['long_name']);
+                                    $flux_job['city'] = $component['long_name'];
                                     break;
                                 case 'postal_code':
                                     $job->setZip($component['long_name']);
+                                    $flux_job['zip'] = $component['long_name'];
                                     break;
                                 case 'administrative_area_level_2':
                                     $department = $this->department->findOneByName(strtoupper($component['long_name']));
                                     if ($department) {
                                         $job->setDepartment($department);
+                                        $flux_job['department'] = $department;
                                     }
                                     break;
                             }
                         }
                     }
 
-                    $this->em->persist($job);
-                    $this->em->flush();
+                    $flux_job_form = $this->formFactory->create('appbundle_job', $job);
+
+                    if(!$flux_job_form->isValid()) {
+                        foreach ($flux_job_form->getErrors() as $key => $error) {
+                            var_dump($key, $error);
+                        }
+                        var_dump('error');
+                    } else {
+                        var_dump('toto');
+                    }
+
+                    //$this->em->persist($job);
+                    //$this->em->flush();
 
                 }
             }

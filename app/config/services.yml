@@ -12,4 +12,22 @@ services:
 
     get_object_from_flux:
           class: AppBundle\Service\GetObjectFromFlux
-          arguments: [ @doctrine.orm.entity_manager ]
+          arguments: [ @doctrine.orm.entity_manager, @form.factory ]
+
+
+    # Form
+
+    csv.form:
+        class: AppBundle\Form\GetFluxCSVType
+        tags:
+            - { name: form.type, alias: appbundle_get_csv }
+
+    job.form:
+        class: AppBundle\Form\JobType
+        tags:
+            - { name: form.type, alias: appbundle_job }
+
+    formation.form:
+        class: AppBundle\Form\FormationType
+        tags:
+            - { name: form.type, alias: appbundle_formation }

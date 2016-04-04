@@ -29,9 +29,14 @@ class JobType
     private $name;
 
     /**
-     * @ORM\OneToOne(targetEntity="FluxJobType", mappedBy="jobType")
+     * @ORM\OneToMany(targetEntity="FluxJobType", mappedBy="jobType")
      */
     private $fluxJobTypes;
+
+    /**
+     * @ORM\OneToMany(targetEntity="Job", mappedBy="jobType")
+     */
+    private $jobs;
 
     /**
      * Get id
