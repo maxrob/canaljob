@@ -108,7 +108,7 @@ class Job extends BaseEntity
     /**
      * @var bool
      *
-     * @ORM\Column(name="is_geoloc", type="boolean", nullable=true)
+     * @ORM\Column(name="is_geoloc", type="boolean", nullable=true, options={"default" = false})
      */
     private $isGeoloc;
 
@@ -158,15 +158,27 @@ class Job extends BaseEntity
 
     /**
      * @ORM\ManyToOne(targetEntity="FluxJobField", inversedBy="jobs")
-     * @ORM\JoinColumn(name="flux_job_field_id", referencedColumnName="id")
+     * @ORM\JoinColumn(name="flux_job_field_id", referencedColumnName="id", nullable=true)
      */
     protected $fluxJobField;
 
     /**
      * @ORM\ManyToOne(targetEntity="FluxJobType", inversedBy="jobs")
-     * @ORM\JoinColumn(name="flux_job_type_id", referencedColumnName="id")
+     * @ORM\JoinColumn(name="flux_job_type_id", referencedColumnName="id", nullable=true)
      */
     protected $fluxJobType;
+
+    /**
+     * @ORM\ManyToOne(targetEntity="JobField", inversedBy="jobs")
+     * @ORM\JoinColumn(name="job_field_id", referencedColumnName="id", nullable=true)
+     */
+    protected $jobField;
+
+    /**
+     * @ORM\ManyToOne(targetEntity="JobType", inversedBy="jobs")
+     * @ORM\JoinColumn(name="job_type_id", referencedColumnName="id", nullable=true)
+     */
+    protected $jobType;
 
     /**
      * @return int
@@ -551,6 +563,8 @@ class Job extends BaseEntity
     {
         $this->jobType = $jobType;
     }
+
+
 
 
 }

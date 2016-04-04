@@ -128,15 +128,27 @@ class Formation extends BaseEntity
 
     /**
      * @ORM\ManyToOne(targetEntity="FluxFormationField", inversedBy="formations")
-     * @ORM\JoinColumn(name="flux_formation_field_id", referencedColumnName="id")
+     * @ORM\JoinColumn(name="flux_formation_field_id", referencedColumnName="id", nullable=true)
      */
     protected $fluxFormationField;
 
     /**
      * @ORM\ManyToOne(targetEntity="FluxFormationType", inversedBy="formations")
-     * @ORM\JoinColumn(name="flux_formation_type_id", referencedColumnName="id")
+     * @ORM\JoinColumn(name="flux_formation_type_id", referencedColumnName="id", nullable=true)
      */
     protected $fluxFormationType;
+
+    /**
+     * @ORM\ManyToOne(targetEntity="FormationField", inversedBy="formations")
+     * @ORM\JoinColumn(name="formation_field_id", referencedColumnName="id", nullable=true)
+     */
+    protected $formationField;
+
+    /**
+     * @ORM\ManyToOne(targetEntity="FormationType", inversedBy="formations")
+     * @ORM\JoinColumn(name="formation_type_id", referencedColumnName="id", nullable=true)
+     */
+    protected $formationType;
 
     public function __construct()
     {
@@ -493,5 +505,37 @@ class Formation extends BaseEntity
     public function setFluxFormationType($fluxFormationType)
     {
         $this->fluxFormationType = $fluxFormationType;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getFormationField()
+    {
+        return $this->formationField;
+    }
+
+    /**
+     * @param mixed $formationField
+     */
+    public function setFormationField($formationField)
+    {
+        $this->formationField = $formationField;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getFormationType()
+    {
+        return $this->formationType;
+    }
+
+    /**
+     * @param mixed $formationType
+     */
+    public function setFormationType($formationType)
+    {
+        $this->formationType = $formationType;
     }
 }

@@ -2,6 +2,7 @@
 
 namespace AppBundle\Repository;
 
+use AppBundle\Entity\JobType;
 use Doctrine\ORM\EntityRepository;
 
 /**
@@ -12,4 +13,18 @@ use Doctrine\ORM\EntityRepository;
  */
 class JobTypeRepository extends EntityRepository
 {
+    public function findOneOrCreate(array $name)
+    {
+        $entity = $this->findOneBy($name);
+
+        if (null === $entity)
+        {
+            $entity = new JobType();
+            $entity->setName($name['name']);
+            $this->_em->persist($entity);
+            $this->_em->flush();
+        }
+
+        return $entity;
+    }
 }

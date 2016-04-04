@@ -29,9 +29,14 @@ class JobField
     private $name;
 
     /**
-     * @ORM\OneToOne(targetEntity="FluxJobField", mappedBy="jobField")
+     * @ORM\OneToMany(targetEntity="FluxJobField", mappedBy="jobField")
      */
     private $fluxJobFields;
+
+    /**
+     * @ORM\OneToMany(targetEntity="Job", mappedBy="jobField")
+     */
+    private $jobs;
 
     /**
      * Get id
@@ -80,5 +85,21 @@ class JobField
     public function setFluxJobFields($fluxJobFields)
     {
         $this->fluxJobFields = $fluxJobFields;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getJob()
+    {
+        return $this->job;
+    }
+
+    /**
+     * @param mixed $job
+     */
+    public function setJob($job)
+    {
+        $this->job = $job;
     }
 }
