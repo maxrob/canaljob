@@ -5,10 +5,10 @@ namespace AppBundle\Controller;
 use AppBundle\Entity\Company;
 use AppBundle\Entity\School;
 use AppBundle\Import\ImportFactory;
-use AppBundle\Service\CsvFlux;
-use AppBundle\Service\FluxInterface;
-use AppBundle\Service\ImportInterface;
-use AppBundle\Service\XmlFlux;
+use AppBundle\Import\ImportCSV;
+use AppBundle\Import\FluxInterface;
+use AppBundle\Import\ImportInterface;
+use AppBundle\Import\ImportXML;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
@@ -68,7 +68,7 @@ class BaseController extends Controller
         }
 
         return $this->render(':default:csv.html.twig',
-            ['form' => $form->createView(),]
+            ['form' => $form->createView()]
         );
     }
 
