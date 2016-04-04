@@ -11,8 +11,16 @@ services:
     # Service
 
     get_object_from_flux:
-          class: AppBundle\Service\GetObjectFromFlux
-          arguments: [ @doctrine.orm.entity_manager, @form.factory ]
+        class: AppBundle\Service\GetObjectFromFlux
+        arguments: [ @doctrine.orm.entity_manager, @form.factory ]
+
+    entity_manager:
+        class: AppBundle\Service\EntityManager
+        arguments: [ @doctrine.orm.entity_manager ]
+
+    form_factory:
+        class: AppBundle\Service\FormFactory
+        arguments: [ @form.factory ]
 
 
     # Form

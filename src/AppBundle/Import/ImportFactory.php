@@ -3,9 +3,13 @@
 
 namespace AppBundle\Import;
 
+use Doctrine\ORM\EntityManager;
+use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 
 class ImportFactory
 {
+
+
     /**
      * Instanciate import system
      *
