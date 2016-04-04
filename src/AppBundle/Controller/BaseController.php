@@ -4,6 +4,11 @@ namespace AppBundle\Controller;
 
 use AppBundle\Entity\Company;
 use AppBundle\Entity\School;
+use AppBundle\Import\ImportFactory;
+use AppBundle\Service\CsvFlux;
+use AppBundle\Service\FluxInterface;
+use AppBundle\Service\ImportInterface;
+use AppBundle\Service\XmlFlux;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
@@ -42,10 +47,10 @@ class BaseController extends Controller
     {
 
         $form = $this->createForm('appbundle_get_csv');
-
         $form->handleRequest($request);
 
-        if ($form->isSubmitted() && $form->isValid()) {
+        if ($form->isSubmitted() && $form->isValid())
+        {
             // Get file
             $file = $form->get('csv_file');
             $school = $form->get('schools')->getData();
@@ -56,7 +61,7 @@ class BaseController extends Controller
         }
 
         return $this->render(':default:csv.html.twig',
-            array('form' => $form->createView(),)
+            ['form' => $form->createView(),]
         );
     }
 
@@ -79,15 +84,18 @@ class BaseController extends Controller
         $company = new Company();
         $company->setName('Sogeti');
         $address = "27, bis rue du progrès, 93100 Montreuil";
-        $geo = file_get_contents('http://maps.googleapis.com/maps/api/geocode/json?address='.urlencode($address).'&sensor=false');
+        $geo = file_get_contents('http://maps.googleapis.com/maps/api/geocode/json?address=' . urlencode($address) . '&sensor=false');
         $geo = json_decode($geo, true);
-        if ($geo['status'] === 'OK') {
+        if ($geo['status'] === 'OK')
+        {
             $company->setAddress($geo['results'][0]['formatted_address']);
             $company->setLatitude($geo['results'][0]['geometry']['location']['lat']);
             $company->setLongitude($geo['results'][0]['geometry']['location']['lng']);
 
-            foreach($geo['results'][0]['address_components'] as $component) {
-                switch ($component['types'][0]) {
+            foreach ($geo['results'][0]['address_components'] as $component)
+            {
+                switch ($component['types'][0])
+                {
                     case 'locality':
                         $company->setCity($component['long_name']);
                         break;
@@ -129,15 +137,18 @@ class BaseController extends Controller
         $school->setName('HETIC');
         $school->getIsOnlyOnline(false);
         $address = "27, bis rue du progrès, 93100 Montreuil";
-        $geo = file_get_contents('http://maps.googleapis.com/maps/api/geocode/json?address='.urlencode($address).'&sensor=false');
+        $geo = file_get_contents('http://maps.googleapis.com/maps/api/geocode/json?address=' . urlencode($address) . '&sensor=false');
         $geo = json_decode($geo, true);
-        if ($geo['status'] === 'OK') {
+        if ($geo['status'] === 'OK')
+        {
             $school->setAddress($geo['results'][0]['formatted_address']);
             $school->setLatitude($geo['results'][0]['geometry']['location']['lat']);
             $school->setLongitude($geo['results'][0]['geometry']['location']['lng']);
 
-            foreach($geo['results'][0]['address_components'] as $component) {
-                switch ($component['types'][0]) {
+            foreach ($geo['results'][0]['address_components'] as $component)
+            {
+                switch ($component['types'][0])
+                {
                     case 'locality':
                         $school->setCity($component['long_name']);
                         break;
@@ -154,5 +165,22 @@ class BaseController extends Controller
         $em->flush();
 
         return $this->render(':default:index.html.twig');
+    }
+
+    /**
+     * /admin/import/{type}
+     * /admin/import/xml
+     * /admin/import/csv
+     *
+     * @param Request $request
+     */
+    public function importAction(Request $request)
+    {
+        $parameters = [];
+
+        /** @var ImportInterface $import */
+        $importService = ImportFactory::instanciate('xml', $parameters);
+
+        $importService->import();
     }
 }
