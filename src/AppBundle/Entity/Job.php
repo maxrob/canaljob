@@ -80,14 +80,14 @@ class Job extends BaseEntity
     /**
      * @var \DateTime
      *
-     * @ORM\Column(name="begin_date", type="date", nullable=true)
+     * @ORM\Column(name="begin_date", type="datetime", nullable=true)
      */
     private $beginDate;
 
     /**
      * @var \DateTime
      *
-     * @ORM\Column(name="end_date", type="date", nullable=true)
+     * @ORM\Column(name="end_date", type="datetime", nullable=true)
      */
     private $endDate;
 

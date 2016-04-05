@@ -4,7 +4,9 @@
 namespace AppBundle\Import;
 
 use Doctrine\ORM\EntityManager;
-use Symfony\Bundle\FrameworkBundle\Controller\Controller;
+use Symfony\Component\Form\FormFactory;
+use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\Validator\Constraint;
 
 class ImportFactory
 {
@@ -13,21 +15,22 @@ class ImportFactory
     /**
      * Instanciate import system
      *
-     * @param $type
-     * @param $parameters
+     * @param EntityManager $entityManager
+     * @param FormFactory $formFactory
      * @return ImportInterface
      */
-    public static function instanciate($type, $parameters)
+    public static function instanciate(Request $request, EntityManager $entityManager, FormFactory $formFactory, Constraint $validation)
     {
         $importSystem = null;
+        $type = $request->get('type');
 
         switch ($type)
         {
             case 'CSV':
-                $importSystem = new ImportCSV($parameters);
+                $importSystem = new ImportCSV($entityManager, $formFactory, $validation);
                 break;
             case 'XML':
-                $importSystem = new ImportXML($parameters);
+                $importSystem = new ImportXML($entityManager, $formFactory, $validation);
                 break;
             default:
                 throw new \InvalidArgumentException("$type is not defined as import service.");

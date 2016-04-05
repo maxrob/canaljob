@@ -14,22 +14,30 @@ class ImportCSV implements ImportInterface
      */
     private $parameters;
 
-    public function __construct($parameters, EntityManager $em, FormFactory $formFactory)
+    /**
+     * @var EntityManager
+     */
+    private $entityManager;
+
+    /**
+     * @var FormFactory
+     */
+    private $formFactory;
+
+    public function __construct(EntityManager $entityManager, FormFactory $formFactory, $validation)
     {
-        $this->em = $em;
-        $this->department = $this->em->getRepository('AppBundle:Department');
-        $this->company = $this->em->getRepository('AppBundle:Company');
-        $this->flux_job_field = $this->em->getRepository('AppBundle:FluxJobField');
-        $this->job_field = $this->em->getRepository('AppBundle:JobField');
-        $this->flux_job_type = $this->em->getRepository('AppBundle:FluxJobType');
-        $this->job_type = $this->em->getRepository('AppBundle:JobType');
+        $this->entityManager = $entityManager;
         $this->formFactory = $formFactory;
-        $this->parameters = $parameters;
     }
 
     public function import()
     {
+        var_dump("implements import for csv");
+    }
 
+    public function setParameters($parameters)
+    {
+        // TODO: Implement setParameters() method.
     }
 
     public function getSource($url)
@@ -37,20 +45,18 @@ class ImportCSV implements ImportInterface
         // TODO: Implement getSource() method.
     }
 
-    public function constructObject($data)
+
+    public function getAddress($address)
     {
-        // TODO: Implement getObject() method.
+        // TODO: Implement getAddress() method.
     }
 
-    public function getAddressData($address)
-    {
-        // TODO: Implement getAddresses() method.
-    }
-
-    public function getCorrespondence($domain , $type)
+    public function getCorrespondence($domain, $type)
     {
         // TODO: Implement getCorrespondence() method.
     }
+
+
 
     public function validateObject()
     {

@@ -24,13 +24,6 @@ class Department
     /**
      * @var string
      *
-     * @ORM\Column(name="zip", type="string", length=255, unique=true)
-     */
-    private $zip;
-
-    /**
-     * @var string
-     *
      * @ORM\Column(name="name", type="string", length=255)
      */
     private $name;
@@ -54,29 +47,6 @@ class Department
     public function getId()
     {
         return $this->id;
-    }
-
-    /**
-     * Set zip
-     *
-     * @param string $zip
-     * @return Department
-     */
-    public function setZip($zip)
-    {
-        $this->zip = $zip;
-
-        return $this;
-    }
-
-    /**
-     * Get zip
-     *
-     * @return string 
-     */
-    public function getZip()
-    {
-        return $this->zip;
     }
 
     /**
@@ -107,7 +77,7 @@ class Department
      */
     public function getJob()
     {
-        return $this->job;
+        return $this->jobs;
     }
 
     /**
@@ -115,7 +85,7 @@ class Department
      */
     public function setJob($job)
     {
-        $this->job = $job;
+        $this->jobs = $job;
     }
 
     /**
@@ -123,7 +93,7 @@ class Department
      */
     public function getFormation()
     {
-        return $this->formation;
+        return $this->formations;
     }
 
     /**
@@ -131,7 +101,7 @@ class Department
      */
     public function setFormation($formation)
     {
-        $this->formation = $formation;
+        $this->formations = $formation;
     }
 
 

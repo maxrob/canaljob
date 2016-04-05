@@ -4,15 +4,13 @@ namespace AppBundle\Controller;
 
 use AppBundle\Entity\Company;
 use AppBundle\Entity\School;
-use AppBundle\Import\ImportFactory;
-use AppBundle\Import\ImportCSV;
-use AppBundle\Import\ImportInterface;
-use AppBundle\Import\ImportXML;
+use AppBundle\Service\CsvFlux;
+use AppBundle\Service\FluxInterface;
+use AppBundle\Service\ImportInterface;
+use AppBundle\Service\XmlFlux;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
-use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Symfony\Component\HttpFoundation\Request;
-use Symfony\Component\HttpFoundation\Response;
 use UserBundle\Entity\User;
 
 class BaseController extends Controller
@@ -26,17 +24,19 @@ class BaseController extends Controller
     }
 
     /**
-     * @Route("/import/{type}")
+     * @Route(name="import", path="/import/{type}")
      * @param Request $request
-     * @param $type
-     * @return Response
+     * @return \Symfony\Component\HttpFoundation\RedirectResponse
      */
     public function importAction(Request $request, $type)
     {
-        $parameters = [];
+        // define parameters
+        $parameters = array();
+
         $form = null;
 
-        switch ($type) {
+        switch ($type)
+        {
             case 'CSV':
                 $form = $this->createForm('appbundle_get_csv');
                 $form->handleRequest($request);
@@ -51,11 +51,10 @@ class BaseController extends Controller
                         "file"      => $file,
                         "school"    => $school
                     ];
+
                 }
 
                 $form = $form->createView();
-
-                $render = ':default:index.html.twig';
                 break;
 
             case 'XML':
@@ -63,22 +62,20 @@ class BaseController extends Controller
                     "begin" => new \DateTime("2016-03-15"),
                     "end"   => new \DateTime("2016-04-15")
                 ];
-                $render = ':default:index.html.twig';
                 break;
 
             default:
+                throw new \InvalidArgumentException("$type is not defined as import service.");
                 break;
         }
 
-        $importService = ImportFactory::instanciate($type, $parameters);
 
+        $importService = $this->get('canal_job.import_system');
 
-        /** @var ImportInterface $import */
-
+        $importService->setParameters($parameters);
         $importService->import();
 
-
-        return $this->render($render,
+        return $this->render(':default:csv.html.twig',
             ['form' => $form]
         );
     }

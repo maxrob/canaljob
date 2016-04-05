@@ -1,6 +1,6 @@
 # Cache and logs (Symfony2)
-/app/cache/*
-/app/logs/*
+app/cache/*
+app/logs/*
 !app/cache/.gitkeep
 !app/logs/.gitkeep
 
@@ -16,13 +16,13 @@
 !var/sessions/.gitkeep
 
 # Parameters
-/app/config/parameters.yml
-/app/config/parameters.ini
+app/config/parameters.yml
+app/config/parameters.ini
 
 # Managed by Composer
-/app/bootstrap.php.cache
+app/bootstrap.php.cache
 /var/bootstrap.php.cache
-/bin/*
+bin/*
 !bin/console
 !bin/symfony_requirements
 /vendor/
@@ -95,3 +95,6 @@ fabric.properties
 .idea/encodings.xml
 .idea/canaljob.iml
 .idea/copyright/profiles_settings.xml
+.idea/symfony2.xml
+app/logs/.gitkeep
+app/cache/.gitkeep

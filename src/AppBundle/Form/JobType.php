@@ -22,10 +22,12 @@ class JobType extends AbstractType
             ->add('address', 'text', array(
                 'required' => true,
             ))
-            ->add('latitude', 'text', array(
+            ->add('latitude', 'number', array(
+                'scale' => 20,
                 'required' => true,
             ))
-            ->add('longitude', 'text', array(
+            ->add('longitude', 'number', array(
+                'scale' => 20,
                 'required' => true,
             ))
             ->add('zip', 'text')
@@ -38,17 +40,23 @@ class JobType extends AbstractType
             ->add('prerequisite', 'textarea', array(
                 'required' => true,
             ))
-            ->add('beginDate', 'date')
-            ->add('endDate', 'date')
+            ->add('beginDate', 'datetime', array(
+                'input' => 'datetime',
+                'format' => 'yyyy-MM-dd HH:mm'
+            ))
+            ->add('endDate', 'datetime')
             ->add('url', 'text')
             ->add('mail', 'email')
             ->add('isGeoloc', 'choice', array(
-                'choices'  => array( 'Non' => false, 'Oui' => true),
+                'choices' => array(
+                    true,
+                    false
+                ),
                 'expanded' => true,
                 'multiple' => false
             ))
-            ->add('salaryMin', 'text')
-            ->add('salaryMax', 'text')
+            ->add('salaryMin', 'number')
+            ->add('salaryMax', 'number')
             ->add('salaryType', 'text')
             ->add('company', EntityType::class, array(
                 'class' => 'AppBundle:Company',
@@ -83,7 +91,8 @@ class JobType extends AbstractType
     public function configureOptions(OptionsResolver $resolver)
     {
         $resolver->setDefaults(array(
-            'data_class' => 'AppBundle\Entity\Job'
+            'data_class' => 'AppBundle\Entity\Job',
+            'csrf_protection' => false
         ));
     }
 

@@ -22,6 +22,12 @@ services:
         class: AppBundle\Service\FormFactory
         arguments: [ @form.factory ]
 
+    canal_job.import_system:
+        class: AppBundle\Import\ImportInterface
+        factory_class: AppBundle\Import\ImportFactory
+        factory_method: instanciate
+        arguments: [ @request, @doctrine.orm.entity_manager, @form.factory, @validatevalidator_constraint ]
+        scope: request
 
     # Form
 
