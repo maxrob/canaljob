@@ -7,6 +7,9 @@ namespace AppBundle\Import;
 use AppBundle\Entity\Job;
 use Doctrine\ORM\EntityManager;
 use Symfony\Component\Form\FormFactory;
+use Symfony\Component\Validator\Validator\RecursiveValidator;
+use Symfony\Component\Validator\Constraints as Assert;
+
 
 class ImportXML implements ImportInterface
 {
@@ -18,7 +21,7 @@ class ImportXML implements ImportInterface
     /**
      * @var EntityManager
      */
-    private $entityManager;
+    private $em;
 
     /**
      * @var FormFactory
@@ -35,10 +38,15 @@ class ImportXML implements ImportInterface
      */
     private $errors = [];
 
-    public function __construct(EntityManager $entityManager, FormFactory $formFactory, $validation)
+    /**
+     * @var RecursiveValidator
+     */
+    private $validator;
+
+    public function __construct(EntityManager $entityManager, FormFactory $formFactory, RecursiveValidator $validator)
     {
         $this->em = $entityManager;
-        $this->validator = $validation;
+
         $this->department = $this->em->getRepository('AppBundle:Department');
         $this->company = $this->em->getRepository('AppBundle:Company');
         $this->flux_job_field = $this->em->getRepository('AppBundle:FluxJobField');
@@ -46,6 +54,8 @@ class ImportXML implements ImportInterface
         $this->flux_job_type = $this->em->getRepository('AppBundle:FluxJobType');
         $this->job_type = $this->em->getRepository('AppBundle:JobType');
         $this->formFactory = $formFactory;
+
+        $this->validator = $validator;
     }
 
     public function import()
@@ -53,8 +63,8 @@ class ImportXML implements ImportInterface
         $companies = $this->company->findAll();
 
         foreach ($companies as $company) {
-            $url = $company->getFluxXml();
 
+            $url = $company->getFluxXml();
             $data = $this->getSource($url);
 
             foreach($data as $offer) {
@@ -62,14 +72,10 @@ class ImportXML implements ImportInterface
 
                 $this->object->setCompany($company);
                 $this->constructObject($offer);
-
-                $this->errors[] = $this->validateObject();
+                $this->validateAndSubmitObject();
             }
         }
-
         die;
-        //$this->em->persist($job);
-        //$this->em->flush();
     }
 
     public function getSource($url)
@@ -85,7 +91,14 @@ class ImportXML implements ImportInterface
             $begin_date = ($data->DATEDEBUT) ? new \DateTime($data->DATEDEBUT) : null;
             $end_date = ($data->DATEFIN) ? new \DateTime($data->DATEFIN) : null;
 
-
+            $this->object->setTitle((string)$data->INTITULE);
+            $this->object->setDescription((string)$data->PRESENTATION);
+            $this->object->setPrerequisite((string)$data->PROFILCANDIDAT);
+            $this->object->setBeginDate($begin_date);
+            $this->object->setEndDate($end_date);
+            $this->object->setUrl((string)$data->URL);
+            $this->object->setMail((string)$data->MAIL_ENVOI_CV);
+            $this->object->setIsGeoloc(true);
             $this->object->setSalaryMin((int)$data->REMUNERATION_MIN);
             $this->object->setSalaryMax((int)$data->REMUNERATION_MAX);
             $this->object->setSalaryType((string)$data->REMUNERATION_F);
@@ -152,21 +165,26 @@ class ImportXML implements ImportInterface
         $this->parameters = $parameters;
     }
 
-    public function validateObject()
+    public function validateAndSubmitObject()
     {
-        var_dump($this->object);
         $errors = $this->validator->validate($this->object);
-        if (count($errors) > 0) {
-            /*
-             * Uses a __toString method on the $errors variable which is a
-             * ConstraintViolationList object. This gives us a nice string
-             * for debugging.
-             */
-            $errorsString = (string) $errors;
+        $error_message = [];
 
-            var_dump($errorsString);
+        if(count($errors) > 0) {
+            foreach($errors as $error) {
+                $error_message[$error->getPropertyPath()] = $error->getMessage();
+            }
 
+            $error_object = [
+                "object" => $this->object,
+                "errors" => $error_message
+            ];
+
+            $this->errors[] = $error_object;
+        } else {
+            $this->em->persist($this->object);
+            $this->em->flush();
         }
-        die;
+
     }
 }

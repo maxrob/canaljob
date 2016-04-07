@@ -3,6 +3,7 @@
 namespace AppBundle\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Component\Validator\Constraints as Assert;
 
 /**
  * Job
@@ -22,6 +23,7 @@ class Job extends BaseEntity
     private $id;
 
     /**
+     * @Assert\NotNull
      * @var string
      *
      * @ORM\Column(name="title", type="string", length=255)
@@ -29,6 +31,7 @@ class Job extends BaseEntity
     private $title;
 
     /**
+     * @Assert\NotNull
      * @var string
      *
      * @ORM\Column(name="address", type="string", length=255)
@@ -36,6 +39,7 @@ class Job extends BaseEntity
     private $address;
 
     /**
+     * @Assert\NotNull
      * @var float
      *
      * @ORM\Column(name="latitude", type="float")
@@ -43,6 +47,7 @@ class Job extends BaseEntity
     private $latitude;
 
     /**
+     * @Assert\NotNull
      * @var float
      *
      * @ORM\Column(name="longitude", type="float")
@@ -57,6 +62,7 @@ class Job extends BaseEntity
     private $zip;
 
     /**
+     * @Assert\NotNull
      * @var string
      *
      * @ORM\Column(name="city", type="string", length=255)
@@ -64,6 +70,7 @@ class Job extends BaseEntity
     private $city;
 
     /**
+     * @Assert\NotNull
      * @var string
      *
      * @ORM\Column(name="description", type="text")
@@ -71,6 +78,7 @@ class Job extends BaseEntity
     private $description;
 
     /**
+     * @Assert\NotNull
      * @var string
      *
      * @ORM\Column(name="prerequisite", type="text")
@@ -135,6 +143,7 @@ class Job extends BaseEntity
     private $salaryType;
 
     /**
+     * @Assert\NotNull
      * @var int
      *
      * @ORM\Column(name="status", type="integer", options={"default" = 1})
@@ -145,6 +154,7 @@ class Job extends BaseEntity
     // Statut 2 => Champs valide et accepté
 
     /**
+     * @Assert\NotNull
      * @ORM\ManyToOne(targetEntity="Company", inversedBy="jobs")
      * @ORM\JoinColumn(name="company_id", referencedColumnName="id")
      */

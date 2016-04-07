@@ -10,10 +10,12 @@ interface ImportInterface {
 
     public function getSource($url);
 
+    public function constructObject($data);
+
     public function getAddressData($address);
 
     public function getCorrespondence($domain , $type);
 
-    public function validateObject();
+    public function validateAndSubmitObject();
 
 }

@@ -4,10 +4,6 @@ namespace AppBundle\Controller;
 
 use AppBundle\Entity\Company;
 use AppBundle\Entity\School;
-use AppBundle\Service\CsvFlux;
-use AppBundle\Service\FluxInterface;
-use AppBundle\Service\ImportInterface;
-use AppBundle\Service\XmlFlux;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Symfony\Component\HttpFoundation\Request;
@@ -22,7 +18,7 @@ class BaseController extends Controller
     {
         return $this->render(':default:index.html.twig');
     }
-
+    
     /**
      * @Route(name="import", path="/import/{type}")
      * @param Request $request
@@ -52,6 +48,10 @@ class BaseController extends Controller
                         "school"    => $school
                     ];
 
+                    $importService = $this->get('canal_job.import_system');
+
+                    $importService->setParameters($parameters);
+                    $importService->import();
                 }
 
                 $form = $form->createView();
@@ -62,18 +62,17 @@ class BaseController extends Controller
                     "begin" => new \DateTime("2016-03-15"),
                     "end"   => new \DateTime("2016-04-15")
                 ];
+
+                $importService = $this->get('canal_job.import_system');
+
+                $importService->setParameters($parameters);
+                $importService->import();
                 break;
 
             default:
                 throw new \InvalidArgumentException("$type is not defined as import service.");
                 break;
         }
-
-
-        $importService = $this->get('canal_job.import_system');
-
-        $importService->setParameters($parameters);
-        $importService->import();
 
         return $this->render(':default:csv.html.twig',
             ['form' => $form]
