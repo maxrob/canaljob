@@ -7,6 +7,7 @@ namespace AppBundle\Import;
 use AppBundle\Entity\Job;
 use Doctrine\ORM\EntityManager;
 use Symfony\Component\Form\FormFactory;
+use Symfony\Component\Validator\Validator\RecursiveValidator;
 
 class ImportXML implements ImportInterface
 {
@@ -35,10 +36,13 @@ class ImportXML implements ImportInterface
      */
     private $errors = [];
 
-    public function __construct(EntityManager $entityManager, FormFactory $formFactory, $validation)
+    /**
+     * @var RecursiveValidator
+     */
+    private $validator;
+
+    public function __construct(EntityManager $entityManager, FormFactory $formFactory, RecursiveValidator $validator)
     {
-        $this->em = $entityManager;
-        $this->validator = $validation;
         $this->department = $this->em->getRepository('AppBundle:Department');
         $this->company = $this->em->getRepository('AppBundle:Company');
         $this->flux_job_field = $this->em->getRepository('AppBundle:FluxJobField');
@@ -46,6 +50,9 @@ class ImportXML implements ImportInterface
         $this->flux_job_type = $this->em->getRepository('AppBundle:FluxJobType');
         $this->job_type = $this->em->getRepository('AppBundle:JobType');
         $this->formFactory = $formFactory;
+
+        $this->validator = $validator;
+        $this->entityManager = $entityManager;
     }
 
     public function import()

@@ -22,7 +22,7 @@ class BaseController extends Controller
     {
         return $this->render(':default:index.html.twig');
     }
-
+    
     /**
      * @Route(name="import", path="/import/{type}")
      * @param Request $request

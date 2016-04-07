@@ -6,6 +6,7 @@ namespace AppBundle\Import;
 
 use Doctrine\ORM\EntityManager;
 use Symfony\Component\Form\FormFactory;
+use Symfony\Component\Validator\Validator\RecursiveValidator;
 
 class ImportCSV implements ImportInterface
 {
@@ -24,14 +25,21 @@ class ImportCSV implements ImportInterface
      */
     private $formFactory;
 
-    public function __construct(EntityManager $entityManager, FormFactory $formFactory, $validation)
+    /**
+     * @var RecursiveValidator
+     */
+    private $validator;
+
+    public function __construct(EntityManager $entityManager, FormFactory $formFactory, RecursiveValidator $validator)
     {
         $this->entityManager = $entityManager;
         $this->formFactory = $formFactory;
+        $this->validator = $validator;
     }
 
     public function import()
     {
+        var_dump($this->validator);
         var_dump("implements import for csv");
     }
 
@@ -56,10 +64,13 @@ class ImportCSV implements ImportInterface
         // TODO: Implement getCorrespondence() method.
     }
 
-
-
     public function validateObject()
     {
         // TODO: Implement getCorrespondence() method.
+    }
+
+    public function getAddressData($address)
+    {
+        // TODO: Implement getAddressData() method.
     }
 }
