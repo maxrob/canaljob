@@ -10,18 +10,6 @@ services:
 
     # Service
 
-    get_object_from_flux:
-        class: AppBundle\Service\GetObjectFromFlux
-        arguments: [ @doctrine.orm.entity_manager, @form.factory ]
-
-    entity_manager:
-        class: AppBundle\Service\EntityManager
-        arguments: [ @doctrine.orm.entity_manager ]
-
-    form_factory:
-        class: AppBundle\Service\FormFactory
-        arguments: [ @form.factory ]
-
     canal_job.import_system:
         class: AppBundle\Import\ImportInterface
         factory_class: AppBundle\Import\ImportFactory
@@ -41,7 +29,18 @@ services:
         tags:
             - { name: form.type, alias: appbundle_job }
 
+    home.search.form:
+            class: AppBundle\Form\HomeSearchType
+            tags:
+                - { name: form.type, alias: appbundle_home_search }
+
     formation.form:
         class: AppBundle\Form\FormationType
         tags:
             - { name: form.type, alias: appbundle_formation }
+
+    # Manager
+
+    job.manager:
+        class: AppBundle\Manager\JobManager
+        arguments: [ @doctrine.orm.entity_manager, @session ]

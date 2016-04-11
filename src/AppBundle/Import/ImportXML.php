@@ -75,7 +75,8 @@ class ImportXML implements ImportInterface
                 $this->validateAndSubmitObject();
             }
         }
-        die;
+
+        return $this->errors;
     }
 
     public function getSource($url)

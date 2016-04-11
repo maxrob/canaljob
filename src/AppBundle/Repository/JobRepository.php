@@ -12,4 +12,36 @@ use Doctrine\ORM\EntityRepository;
  */
 class JobRepository extends EntityRepository
 {
+    public function findJobs($title, $departments, $job_field, $job_types) {
+
+
+        $result = $this->createQueryBuilder('j')
+            ->leftJoin('j.fluxJobField', 'fjf')
+            ->where('j.title LIKE :title')
+            ->andWhere('j.status = :status')
+            ->setParameter('title', '%'.$title.'%')
+            ->setParameter('status', 2);
+
+
+
+        if (count($departments) > 0) {
+            $result->andWhere('j.department IN(:departments)')
+                ->setParameter('departments', $departments);
+        }
+
+        if (count($job_types) > 0) {
+            $result->andWhere('j.jobType IN(:job_types)')
+                ->setParameter('job_types', $job_types);
+        }
+
+        if ($job_field) {
+            $result->andWhere('j.jobField = :job_field OR fjf.jobField = :job_field')
+                ->setParameter('job_field', $job_field);
+        }
+
+        $result = $result->getQuery()->getResult();
+
+        return $result;
+
+    }
 }

@@ -71,6 +71,8 @@ class ImportCSV implements ImportInterface
 
         }
 
+        return $this->errors;
+
     }
 
     public function setParameters($parameters)
