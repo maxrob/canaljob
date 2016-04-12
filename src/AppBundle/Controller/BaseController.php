@@ -11,4 +11,8 @@ class BaseController extends Controller
     public function getJobManager() {
         return $this->get('job.manager');
     }
+
+    public function getFormationManager() {
+        return $this->get('formation.manager');
+    }
 }

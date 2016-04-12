@@ -14,34 +14,96 @@ class JobRepository extends EntityRepository
 {
     public function findJobs($title, $departments, $job_field, $job_types) {
 
+        $results = [];
+        $ids = [];
 
-        $result = $this->createQueryBuilder('j')
+        $queries= $this->createQueryBuilder('j')
             ->leftJoin('j.fluxJobField', 'fjf')
             ->where('j.title LIKE :title')
             ->andWhere('j.status = :status')
             ->setParameter('title', '%'.$title.'%')
-            ->setParameter('status', 2);
+            ->setParameter('status', 2)
+            ->orderBy('j.createdAt', 'DESC');
 
 
 
         if (count($departments) > 0) {
-            $result->andWhere('j.department IN(:departments)')
+            $queries->andWhere('j.department IN(:departments)')
                 ->setParameter('departments', $departments);
         }
 
         if (count($job_types) > 0) {
-            $result->andWhere('j.jobType IN(:job_types)')
+            $queries->andWhere('j.jobType IN(:job_types)')
                 ->setParameter('job_types', $job_types);
         }
 
         if ($job_field) {
-            $result->andWhere('j.jobField = :job_field OR fjf.jobField = :job_field')
+            $queries->andWhere('j.jobField = :job_field OR fjf.jobField = :job_field')
                 ->setParameter('job_field', $job_field);
         }
 
-        $result = $result->getQuery()->getResult();
+        $queries = $queries->getQuery()->getResult();
 
-        return $result;
+        foreach ( $queries as $query) {
+            $results[] = $query;
+            $ids[] = $query->getId();
+        }
+
+        if($departments) {
+            $queries= $this->createQueryBuilder('j')
+                ->leftJoin('j.fluxJobField', 'fjf')
+                ->where('j.department IN(:departments)')
+                ->andWhere('j.id NOT IN(:id)')
+                ->andWhere('j.status = :status')
+                ->setParameter('id', $ids)
+                ->setParameter('departments', $departments)
+                ->orderBy('j.createdAt', 'DESC')
+                ->setParameter('status', 2);
+
+            if (count($job_types) > 0) {
+                $queries->andWhere('j.jobType IN(:job_types)')
+                    ->setParameter('job_types', $job_types);
+            }
+
+            if ($job_field) {
+                $queries->andWhere('j.jobField = :job_field OR fjf.jobField = :job_field')
+                    ->setParameter('job_field', $job_field);
+            }
+
+            $queries = $queries->getQuery()->getResult();
+
+            foreach ( $queries as $query) {
+                $results[] = $query;
+                $ids[] = $query->getId();
+            }
+        }
+
+        if($job_field) {
+            $queries= $this->createQueryBuilder('j')
+                ->leftJoin('j.fluxJobField', 'fjf')
+                ->where('j.jobField = :job_field OR fjf.jobField = :job_field')
+                ->andWhere('j.id NOT IN(:id)')
+                ->andWhere('j.status = :status')
+                ->setParameter('id', $ids)
+                ->setParameter('job_field', $job_field)
+                ->orderBy('j.createdAt', 'DESC')
+                ->setParameter('status', 2);
+
+            if (count($job_types) > 0) {
+                $queries->andWhere('j.jobType IN(:job_types)')
+                    ->setParameter('job_types', $job_types);
+            }
+
+            $queries = $queries->getQuery()->getResult();
+
+            foreach ( $queries as $query) {
+                $results[] = $query;
+            }
+        }
+
+
+
+        return $results;
 
     }
 }

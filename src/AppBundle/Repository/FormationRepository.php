@@ -12,4 +12,96 @@ use Doctrine\ORM\EntityRepository;
  */
 class FormationRepository extends EntityRepository
 {
+    public function findFormations($title, $departments, $formation_field, $formation_types) {
+
+        $results = [];
+        $ids = [];
+
+        $queries= $this->createQueryBuilder('f')
+            ->leftJoin('f.fluxFormationField', 'fff')
+            ->where('f.title LIKE :title')
+            ->andWhere('f.status = :status')
+            ->setParameter('title', '%'.$title.'%')
+            ->setParameter('status', 2)
+            ->orderBy('f.createdAt', 'DESC');
+
+
+
+        if (count($departments) > 0) {
+            $queries->andWhere('f.department IN(:departments)')
+                ->setParameter('departments', $departments);
+        }
+
+        if (count($formation_types) > 0) {
+            $queries->andWhere('f.formationType IN(:formation_types)')
+                ->setParameter('formation_types', $formation_types);
+        }
+
+        if ($formation_field) {
+            $queries->andWhere('f.formationField = :formation_field OR fff.formationField = :formation_field')
+                ->setParameter('formation_field', $formation_field);
+        }
+
+        $queries = $queries->getQuery()->getResult();
+
+        foreach ( $queries as $query) {
+            $results[] = $query;
+            $ids[] = $query->getId();
+        }
+
+        if($departments) {
+            $queries= $this->createQueryBuilder('f')
+                ->leftJoin('f.fluxFormationField', 'fff')
+                ->where('f.department IN(:departments)')
+                ->andWhere('f.id NOT IN(:id)')
+                ->andWhere('f.status = :status')
+                ->setParameter('id', $ids)
+                ->setParameter('departments', $departments)
+                ->orderBy('f.createdAt', 'DESC')
+                ->setParameter('status', 2);
+
+            if (count($formation_types) > 0) {
+                $queries->andWhere('f.formationType IN(:formation_types)')
+                    ->setParameter('formation_types', $formation_types);
+            }
+
+            if ($formation_field) {
+                $queries->andWhere('f.formationField = :formation_field OR fff.formationField = :formation_field')
+                    ->setParameter('formation_field', $formation_field);
+            }
+
+            $queries = $queries->getQuery()->getResult();
+
+            foreach ( $queries as $query) {
+                $results[] = $query;
+                $ids[] = $query->getId();
+            }
+        }
+
+        if($formation_field) {
+            $queries= $this->createQueryBuilder('f')
+                ->leftJoin('f.fluxFormationField', 'fff')
+                ->where('f.formationField = :formation_field OR fff.formationField = :formation_field')
+                ->andWhere('f.id NOT IN(:id)')
+                ->andWhere('f.status = :status')
+                ->setParameter('id', $ids)
+                ->setParameter('formation_field', $formation_field)
+                ->orderBy('f.createdAt', 'DESC')
+                ->setParameter('status', 2);
+
+            if (count($formation_types) > 0) {
+                $queries->andWhere('f.formationType IN(:formation_types)')
+                    ->setParameter('formation_types', $formation_types);
+            }
+
+            $queries = $queries->getQuery()->getResult();
+
+            foreach ( $queries as $query) {
+                $results[] = $query;
+            }
+        }
+
+        return $results;
+
+    }
 }

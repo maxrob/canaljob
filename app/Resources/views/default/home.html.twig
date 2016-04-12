@@ -1,5 +1,11 @@
-<form action="" method="post" {{ form_enctype(form) }}>
-    {{ form_widget(form) }}
+<form action="" method="post" {{ form_enctype(form_job) }}>
+    {{ form_widget(form_job) }}
+
+    <input type="submit" />
+</form>
+
+<form action="" method="post" {{ form_enctype(form_formation) }}>
+    {{ form_widget(form_formation) }}
 
     <input type="submit" />
 </form>
@@ -7,5 +13,11 @@
 {% if jobs is defined %}
     {% for job in jobs %}
         {{ job.title }}
+    {% endfor %}
+{% endif %}
+
+{% if formations is defined %}
+    {% for formation in formations %}
+        {{ formation.title }}
     {% endfor %}
 {% endif %}

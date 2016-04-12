@@ -7,7 +7,7 @@ use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 
-class HomeSearchType extends AbstractType
+class HomeSearchFormationType extends AbstractType
 {
     /**
      * @param FormBuilderInterface $builder
@@ -24,14 +24,14 @@ class HomeSearchType extends AbstractType
                 'choice_label' => 'name',
                 'multiple' => true
             ))
-            ->add('job_type', EntityType::class, array(
-                'class' => 'AppBundle:JobType',
+            ->add('formation_type', EntityType::class, array(
+                'class' => 'AppBundle:FormationType',
                 'choice_label' => 'name',
                 'multiple' => true,
                 'expanded' => true
             ))
-            ->add('job_field', EntityType::class, array(
-                'class' => 'AppBundle:JobField',
+            ->add('formation_field', EntityType::class, array(
+                'class' => 'AppBundle:FormationField',
                 'choice_label' => 'name'
             ))
         ;
@@ -50,6 +50,7 @@ class HomeSearchType extends AbstractType
      */
     public function getName()
     {
-        return 'appbundle_home_search';
+        return 'appbundle_home_search_formation';
     }
 }
+

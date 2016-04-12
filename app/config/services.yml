@@ -29,10 +29,15 @@ services:
         tags:
             - { name: form.type, alias: appbundle_job }
 
-    home.search.form:
-            class: AppBundle\Form\HomeSearchType
+    home.search.job.form:
+            class: AppBundle\Form\HomeSearchJobType
             tags:
-                - { name: form.type, alias: appbundle_home_search }
+                - { name: form.type, alias: appbundle_home_search_job }
+
+    home.search.formation.form:
+            class: AppBundle\Form\HomeSearchFormationType
+            tags:
+                - { name: form.type, alias: appbundle_home_search_formation }
 
     formation.form:
         class: AppBundle\Form\FormationType
@@ -43,4 +48,8 @@ services:
 
     job.manager:
         class: AppBundle\Manager\JobManager
+        arguments: [ @doctrine.orm.entity_manager, @session ]
+
+    formation.manager:
+        class: AppBundle\Manager\FormationManager
         arguments: [ @doctrine.orm.entity_manager, @session ]
