@@ -15,14 +15,11 @@ class HomeSearchFormationType extends AbstractType
      */
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
+        $this->path = $options["request"]->getPathInfo();
+
         $builder
             ->add('title', 'text', array(
                 "required" => false
-            ))
-            ->add('departments', EntityType::class, array(
-                'class' => 'AppBundle:Department',
-                'choice_label' => 'name',
-                'multiple' => true
             ))
             ->add('formation_type', EntityType::class, array(
                 'class' => 'AppBundle:FormationType',
@@ -30,11 +27,35 @@ class HomeSearchFormationType extends AbstractType
                 'multiple' => true,
                 'expanded' => true
             ))
-            ->add('formation_field', EntityType::class, array(
-                'class' => 'AppBundle:FormationField',
-                'choice_label' => 'name'
-            ))
         ;
+
+        if($this->path === "/search") {
+            $builder
+                ->add('departments', EntityType::class, array(
+                    'class' => 'AppBundle:Department',
+                    'choice_label' => 'name',
+                    'multiple' => true,
+                    'expanded' => true
+                ))
+                ->add('formation_field', EntityType::class, array(
+                    'class' => 'AppBundle:FormationField',
+                    'choice_label' => 'name',
+                    'expanded' => true
+                ))
+            ;
+        } else {
+            $builder
+                ->add('departments', EntityType::class, array(
+                    'class' => 'AppBundle:Department',
+                    'choice_label' => 'name',
+                    'multiple' => true,
+                ))
+                ->add('formation_field', EntityType::class, array(
+                    'class' => 'AppBundle:FormationField',
+                    'choice_label' => 'name'
+                ))
+            ;
+        }
     }
 
     /**
@@ -42,7 +63,17 @@ class HomeSearchFormationType extends AbstractType
      */
     public function configureOptions(OptionsResolver $resolver)
     {
+        $resolver->setDefaults(array(
+            'data_class' => 'AppBundle\Entity\Formation'
+        ));
 
+        $resolver->setRequired([
+            'request'
+        ]);
+
+        $resolver->setAllowedTypes([
+            "request" => 'Symfony\Component\HttpFoundation\Request'
+        ]);
     }
 
     /**

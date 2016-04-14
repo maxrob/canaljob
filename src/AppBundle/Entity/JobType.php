@@ -86,4 +86,21 @@ class JobType
     {
         $this->fluxJobTypes = $fluxJobTypes;
     }
+
+    /**
+     * @return mixed
+     */
+    public function getJobs()
+    {
+        return $this->jobs;
+    }
+
+    /**
+     * @param mixed $jobs
+     */
+    public function setJobs($jobs)
+    {
+        $this->jobs = $jobs;
+    }
+
 }

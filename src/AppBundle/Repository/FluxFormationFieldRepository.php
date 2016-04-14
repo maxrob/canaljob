@@ -27,4 +27,14 @@ class FluxFormationFieldRepository extends EntityRepository
 
         return $entity;
     }
+
+    public function getNotComplete()
+    {
+        $entities = $this->createQueryBuilder('fff')
+                        ->where('fff.formationField IS NULL')
+                        ->getQuery()
+                        ->getResult();
+
+        return $entities;
+    }
 }

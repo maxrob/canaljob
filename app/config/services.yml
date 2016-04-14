@@ -53,3 +53,19 @@ services:
     formation.manager:
         class: AppBundle\Manager\FormationManager
         arguments: [ @doctrine.orm.entity_manager, @session ]
+
+    flux_formation_field.manager:
+        class: AppBundle\Manager\FluxFormationFieldManager
+        arguments: [ @doctrine.orm.entity_manager, @session ]
+
+    flux_formation_type.manager:
+        class: AppBundle\Manager\FluxFormationTypeManager
+        arguments: [ @doctrine.orm.entity_manager, @session ]
+
+    flux_job_field.manager:
+        class: AppBundle\Manager\FluxJobFieldManager
+        arguments: [ @doctrine.orm.entity_manager, @session ]
+
+    flux_job_type.manager:
+        class: AppBundle\Manager\FluxJobTypeManager
+        arguments: [ @doctrine.orm.entity_manager, @session ]

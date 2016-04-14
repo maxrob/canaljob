@@ -22,7 +22,7 @@ class ImportController extends BaseController
 
         switch ($type)
         {
-            case 'CSV':
+            case 'csv':
                 $form = $this->createForm('appbundle_get_csv');
                 $form->handleRequest($request);
 
@@ -48,7 +48,7 @@ class ImportController extends BaseController
                 );
                 break;
 
-            case 'XML':
+            case 'xml':
                 $parameters = [
                     "begin" => new \DateTime("2016-03-15"),
                     "end"   => new \DateTime("2016-04-15")
@@ -66,8 +66,5 @@ class ImportController extends BaseController
                 throw new \InvalidArgumentException("$type is not defined as import service.");
                 break;
         }
-
-
     }
-
 }

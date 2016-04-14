@@ -5,7 +5,7 @@ namespace AppBundle\Manager;
 use Doctrine\ORM\EntityManager;
 use Symfony\Component\HttpFoundation\Session\Session;
 
-class FormationManager
+class FluxJobFieldManager
 {
     private $em;
     private $repository;
@@ -14,7 +14,7 @@ class FormationManager
     public function __construct(EntityManager $em, Session $session)
     {
         $this->em = $em;
-        $this->repository = $this->em->getRepository('AppBundle:Formation');
+        $this->repository = $this->em->getRepository('AppBundle:FluxJobField');
     }
 
     /**
@@ -41,5 +41,4 @@ class FormationManager
     {
         $this->em->remove($formation);
         $this->em->flush();
-    }
-}
+    }}

@@ -1,9 +1,1 @@
-<<<<<<< HEAD
-canaljob
-========
-
-A Symfony project created on February 2, 2016, 9:55 am.
-=======
-# canal-job
->>>>>>> 15bfa20dead34047eb5c148dfd2325fea2bf3181
-# canaljob
+Start of Canaljob, a job plateform, on Symfony. Development of XML and CSV import system and search engine system.

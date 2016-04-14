@@ -27,4 +27,14 @@ class FluxJobFieldRepository extends EntityRepository
 
         return $entity;
     }
+
+    public function getNotComplete()
+    {
+        $entities = $this->createQueryBuilder('fjf')
+                        ->where('fjf.jobField IS NULL')
+                        ->getQuery()
+                        ->getResult();
+
+        return $entities;
+    }
 }
